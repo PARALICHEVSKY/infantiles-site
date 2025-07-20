@@ -1,91 +1,102 @@
-<!-- INFANTILES SITE - Полная версия -->
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>INFANTILES | ПГПИ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="icon" href="https://emoji.discadia.com/emojis/89f3e861-202c-4e9b-8612-50a67e36d250.gif" />
+  <meta charset="UTF-8">
+  <title>INFANTILES с сохранением</title>
   <style>
-    html, body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: radial-gradient(circle at center, #1a1a2e, #0f0f1f);
-      color: #fff;
-      overflow-x: hidden;
-    }
-    header, nav, section, footer {
-      padding: 2em;
-      text-align: center;
-    }
-    header {
-      background: #0f0f1f;
-      border-bottom: 4px solid #ff55cc;
-    }
-    nav a {
-      display: inline-block;
-      margin: 0.5em;
-      padding: 0.5em 1em;
-      background: #ff55cc;
-      color: white;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    nav a:hover {
-      background: #ff88dd;
-    }
-    .gallery img {
-      width: 300px;
-      border-radius: 10px;
-      margin: 10px;
-    }
-    footer {
-      background: #111;
-      font-size: 0.9em;
-    }
+    body { font-family: sans-serif; background: #0f0f1f; color: #fff; margin: 0; padding: 2em; }
+    input, textarea { padding: 10px; border-radius: 8px; font-size: 1em; border: none; margin-bottom: 1em; width: 100%; max-width: 400px; }
+    button { padding: 10px 20px; border: none; background: #ff55cc; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .toggle { margin-top: 1em; display: flex; gap: 1em; }
+    .fact, .role { margin-top: 2em; background: #222; padding: 1em; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>INFANTILES</h1>
-    <p>ПГПИ — Приватная Группа По Интересам</p>
-  </header>
+  <h1>INFANTILES — сохраняющийся сайт ✨</h1>
 
-  <nav>
-    <a href="#about">О нас</a>
-    <a href="#gallery">Галерея</a>
-    <a href="#memes">Мемы</a>
-    <a href="#contact">Контакты</a>
-  </nav>
+  <div>
+    <h2>Анкета</h2>
+    <input id="name" placeholder="Имя / Кличка">
+    <textarea id="text" placeholder="Что ты готов сделать ради INFANTILES?"></textarea>
+  </div>
 
-  <section id="about">
-    <h2>О нас</h2>
-    <p>INFANTILES — сквад друзей и кринжа. Добро пожаловать!</p>
-  </section>
+  <div class="toggle">
+    <button onclick="toggleTheme()">🌓 Переключить тему</button>
+    <button onclick="toggleMusic()">🎵 Музыка</button>
+  </div>
 
-  <section id="gallery">
-    <h2>Галерея</h2>
-    <div class="gallery">
-      <img src="https://placekitten.com/300/200" alt="Котик 1" />
-      <img src="https://placekitten.com/301/200" alt="Котик 2" />
-      <img src="https://placekitten.com/302/200" alt="Котик 3" />
-    </div>
-  </section>
+  <div class="role" id="role">Твоя роль: <b id="role-text">Не назначена</b></div>
+  <button onclick="setRole()">Назначить случайную роль</button>
 
-  <section id="memes">
-    <h2>Мемы</h2>
-    <p>Скоро тут будут лучшие мемы сквада INFANTILES. А пока — держи кота 🐱</p>
-    <img src="https://placekitten.com/320/240" alt="Мем" />
-  </section>
+  <div class="fact" id="fact">📢 Факт: ...</div>
 
-  <section id="contact">
-    <h2>Контакты</h2>
-    <p>Telegram: <a href="https://t.me/yourusername">@yourusername</a></p>
-  </section>
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_03e6865374.mp3" type="audio/mpeg">
+  </audio>
 
-  <footer>
-    INFANTILES © 2025 — ПГПИ squad ✨
-  </footer>
+  <script>
+    // Восстановление
+    const nameEl = document.getElementById('name');
+    const textEl = document.getElementById('text');
+    const roleEl = document.getElementById('role-text');
+    const factEl = document.getElementById('fact');
+
+    nameEl.value = localStorage.getItem('inf_name') || '';
+    textEl.value = localStorage.getItem('inf_text') || '';
+    roleEl.innerText = localStorage.getItem('inf_role') || 'Не назначена';
+
+    nameEl.addEventListener('input', e => localStorage.setItem('inf_name', e.target.value));
+    textEl.addEventListener('input', e => localStorage.setItem('inf_text', e.target.value));
+
+    // Тема
+    if (localStorage.getItem('inf_theme') === 'light') document.body.style.background = '#fff', document.body.style.color = '#000';
+    function toggleTheme() {
+      const isLight = document.body.style.background === 'rgb(255, 255, 255)';
+      if (isLight) {
+        document.body.style.background = '#0f0f1f';
+        document.body.style.color = '#fff';
+        localStorage.setItem('inf_theme', 'dark');
+      } else {
+        document.body.style.background = '#fff';
+        document.body.style.color = '#000';
+        localStorage.setItem('inf_theme', 'light');
+      }
+    }
+
+    // Музыка
+    let music = document.getElementById('bg-music');
+    if (localStorage.getItem('inf_music') === 'on') music.play();
+    function toggleMusic() {
+      if (music.paused) {
+        music.play();
+        localStorage.setItem('inf_music', 'on');
+      } else {
+        music.pause();
+        localStorage.setItem('inf_music', 'off');
+      }
+    }
+
+    // Роль
+    function setRole() {
+      const roles = ['Создатель', 'Кринжмейстер', 'Шутник', 'Котик', 'Главный мемер', 'Инфантил'];
+      const role = roles[Math.floor(Math.random() * roles.length)];
+      roleEl.innerText = role;
+      localStorage.setItem('inf_role', role);
+    }
+
+    // Факт
+    const facts = [
+      'INFANTILES придумали слово "ультакринж".',
+      'INFANTILES был создан на кринже.',
+      'У одного участника был ник “Кис-Кис Мудак”.',
+      'Участники играют в шахматы на спор.',
+      'Кот был официально признан талисманом.',
+    ];
+    const savedFact = localStorage.getItem('inf_fact');
+    const fact = savedFact || facts[Math.floor(Math.random() * facts.length)];
+    factEl.innerText = '📢 Факт: ' + fact;
+    if (!savedFact) localStorage.setItem('inf_fact', fact);
+  </script>
 </body>
 </html>
