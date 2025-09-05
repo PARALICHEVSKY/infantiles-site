@@ -32,14 +32,24 @@
       text-align:center;
       position:relative;
       overflow:hidden;
+      animation: fadeIn 1s ease both;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform: scale(.9) translateY(20px); }
+      to   { opacity:1; transform: scale(1) translateY(0); }
     }
     h1{
       margin:0 0 .25em; font-size: clamp(42px, 8vw, 84px); line-height:1; letter-spacing:.04em;
       background: linear-gradient(90deg, #fff, #c7d2fe, #a5f3fc);
       -webkit-background-clip:text; background-clip:text; color:transparent;
       text-shadow: 0 2px 0 rgba(0,0,0,.15);
+      animation: pulse 2.5s infinite;
     }
-    .subtitle{opacity:.8; margin-bottom:1.25em}
+    @keyframes pulse {
+      0%,100% { filter: drop-shadow(0 0 6px rgba(255,255,255,.2)); }
+      50%     { filter: drop-shadow(0 0 14px rgba(255,255,255,.45)); }
+    }
+    .subtitle{opacity:.8; margin-bottom:1.25em; transition:.3s ease;}
 
     .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap}
     .btn{
@@ -50,32 +60,28 @@
       box-shadow: 0 6px 16px rgba(0,0,0,.25), 0 0 0 0 var(--glow);
       user-select:none;
     }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.3), 0 0 0 6px var(--glow); }
-    .btn:active{ transform: translateY(1px) scale(.98); }
+    .btn:hover{ transform: translateY(-1px) scale(1.05); box-shadow: 0 10px 24px rgba(0,0,0,.3), 0 0 0 6px var(--glow); }
+    .btn:active{ transform: translateY(1px) scale(.96); }
 
     .btn.yes{ --bg: rgba(16,185,129,.15); --bd: rgba(16,185,129,.5); --glow: rgba(16,185,129,.25); }
     .btn.no{  --bg: rgba(239,68,68,.12); --bd: rgba(239,68,68,.45); --glow: rgba(239,68,68,.2); position:relative; }
     .btn.retry{ display:none; --bg: rgba(139,92,246,.16); --bd: rgba(139,92,246,.5); --glow: rgba(139,92,246,.25); }
 
-    .hint{ margin-top:1rem; font-size: .95rem; opacity:.7 }
+    .hint{ margin-top:1rem; font-size: .95rem; opacity:.7; }
 
     .tag{
       position:absolute; top:12px; right:12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
       background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); padding:.35em .6em; border-radius:8px;
     }
 
-    /* confetti canvas */
     canvas#fx{ position:fixed; inset:0; pointer-events:none; }
-
-    /* flee area to keep No button inside card */
-    .card-inner{ position:relative }
   </style>
 </head>
 <body>
   <canvas id="fx"></canvas>
 
   <main class="card" role="main" aria-live="polite">
-    <div class="tag">мем</div>
+    <div class="tag">🔥 мем 🔥</div>
     <div class="card-inner">
       <h1 id="title">СОСАЛ?</h1>
       <p class="subtitle" id="subtitle">Ответь честно. Мы никому не скажем 🤫</p>
@@ -86,9 +92,12 @@
         <button class="btn retry" id="retry">Ещё раз</button>
       </div>
 
-      <p class="hint">Подвигай «Нет» — он трусит и убегает.</p>
+      <p class="hint">Кликни «Нет» если сможешь 😏</p>
     </div>
   </main>
+
+  <audio id="yay" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <audio id="nope" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
 
   <script>
     const title = document.getElementById('title');
@@ -96,8 +105,9 @@
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
     const retryBtn = document.getElementById('retry');
+    const yay = document.getElementById('yay');
+    const nope = document.getElementById('nope');
 
-    // Confetti FX (tiny, dependency-free)
     const cv = document.getElementById('fx');
     const ctx = cv.getContext('2d');
     let confetti = [], running = false;
@@ -127,7 +137,6 @@
       for(const p of confetti){
         p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
         ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
-        // auto color cycling via globalCompositeOperation
         ctx.globalCompositeOperation = 'lighter';
         ctx.fillStyle = `hsl(${(p.y+p.x)%360}, 90%, 60%)`;
         if(p.shape==='rect') ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
@@ -138,43 +147,35 @@
       else { running = false; }
     }
 
-    // Move the NO button away from cursor
     noBtn.addEventListener('pointerenter', () => { flee(140); });
     noBtn.addEventListener('pointermove', () => { flee(200); });
 
-    function flee(distance){
+    function flee(){
       const wrap = document.querySelector('.card');
       const rect = wrap.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
-      // pick a random spot within the card bounds
       const pad = 12;
       let x = Math.random()*(rect.width - b.width - pad*2) + pad;
       let y = Math.random()*(rect.height - b.height - pad*2) + pad;
-      // Prevent overlap with YES button
-      const yRect = yesBtn.getBoundingClientRect();
-      if(Math.abs(x - (yRect.left-rect.left)) < 120 && Math.abs(y - (yRect.top-rect.top)) < 60){
-        x = rect.width - b.width - pad - 10; y = pad + 10;
-      }
       noBtn.style.position='absolute';
       noBtn.style.left = x + 'px';
       noBtn.style.top  = y + 'px';
+      nope.currentTime=0; nope.play();
     }
 
-    // YES click => congrats
     yesBtn.addEventListener('click', (e)=>{
       title.textContent = 'УВАЖАЮ 👍';
       subtitle.textContent = 'Честность — сила. Держи конфетти!';
       retryBtn.style.display = 'inline-flex';
       burst(e.clientX, e.clientY);
+      yay.currentTime=0; yay.play();
     });
 
-    // NO click => playful nudge
     noBtn.addEventListener('click', ()=>{
-      subtitle.textContent = 'Не успел нажать? Попробуй ещё 😏';
+      subtitle.textContent = 'Не успел? Ха-ха 😂';
       flee();
     });
 
-    // Retry resets state
     retryBtn.addEventListener('click', ()=>{
       title.textContent = 'СОСАЛ?';
       subtitle.textContent = 'Ответь честно. Мы никому не скажем 🤫';
@@ -184,7 +185,6 @@
       noBtn.style.top  = 'auto';
     });
 
-    // Keyboard support
     window.addEventListener('keydown', (e)=>{
       if(e.key.toLowerCase()==='y'){ yesBtn.click(); }
       if(e.key.toLowerCase()==='n'){ flee(); }
