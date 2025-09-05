@@ -3,77 +3,57 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>СОСАЛ? — Мем‑аркада</title>
-  <meta name="description" content="Сумасшедшая мем-игра: кнопка убегает, уровни, боссы, рекорды и секреты" />
+  <title>СОСАЛ? — Мем‑Аркада (Прокачанная)</title>
+  <meta name="description" content="Максимальная версия мем-игры: уровни, боссы, рекорды, ачивки, экспорты и тонна пасхалок" />
   <style>
-    :root{
-      --bg1:#071021; --bg2:#0f1130; --card:#0f1724; --text:#e6eef8; --accent:#7c5cff; --good:#10b981; --bad:#ef4444;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;overflow:hidden;background:linear-gradient(120deg,var(--bg1),var(--bg2));color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{position:relative;display:flex;align-items:center;justify-content:center;height:100vh;padding:24px}
-    .card{width:min(980px,96vw);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(6px);border-radius:18px;padding:20px 22px;position:relative;z-index:30}
-    header{display:flex;align-items:center;gap:18px;justify-content:space-between}
-    h1{margin:0;font-size:clamp(28px,5vw,48px);background:linear-gradient(90deg,#fff,#c7d2fe);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .controls{display:flex;gap:12px;align-items:center}
-    select,input[type=range]{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:6px;border-radius:8px}
-    .main{display:flex;gap:18px;margin-top:14px}
-    .play{flex:1;min-height:320px;position:relative;overflow:hidden;padding:18px;border-radius:12px;border:1px dashed rgba(255,255,255,0.03)}
-    .hud{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .btn{appearance:none;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);padding:10px 16px;border-radius:999px;color:var(--text);cursor:pointer;user-select:none}
-    .btn:active{transform:translateY(1px)}
-    .btn.yes{background:linear-gradient(90deg,rgba(16,185,129,0.18),rgba(16,185,129,0.12));border-color:rgba(16,185,129,0.4)}
-    .btn.no{background:linear-gradient(90deg,rgba(239,68,68,0.12),rgba(239,68,68,0.06));border-color:rgba(239,68,68,0.3);position:absolute}
-    .score{font-weight:700}
-    .leader{width:260px;padding:12px;border-radius:12px;background:rgba(0,0,0,0.12);border:1px solid rgba(255,255,255,0.03)}
-    .leader h3{margin:0 0 8px 0}
-    ol{padding-left:18px;margin:0}
-
-    /* flying letters */
-    .floating-letter{position:absolute;font-weight:800;font-size:clamp(36px,5vw,96px);opacity:.12;mix-blend-mode:screen;pointer-events:none;will-change:transform}
-
-    /* matrix */
-    .matrix{position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,0.3));color:#00ff44;font-family:monospace;font-size:14px;display:none;z-index:20}
-
-    /* modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:60}
-    .modal .box{background:#071022;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);max-width:90vw}
-
-    /* small helpers */
-    .muted{opacity:.75;font-size:13px}
-    .theme-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px}
-
-    /* emoji rain */
-    .emoji{position:fixed;top:-50px;font-size:28px;pointer-events:none;z-index:10}
-
-    /* screen shake helper */
-    .shake{animation:shake 0.4s}
-    @keyframes shake{0%{transform:translate(0,0)}25%{transform:translate(-8px,6px) rotate(-2deg)}50%{transform:translate(6px,-6px) rotate(2deg)}75%{transform:translate(-6px,6px) rotate(-1deg)}100%{transform:translate(0,0)}}
-
+    :root{--bg1:#031029;--bg2:#0b1630;--card:#071123;--accent:#7c5cff;--good:#10b981;--bad:#ef4444;--text:#e9f2ff}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    .wrap{display:flex;align-items:center;justify-content:center;height:100vh;padding:20px}
+    .card{width:min(1100px,98vw);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(6px);border-radius:16px;padding:16px;position:relative}
+    header{display:flex;align-items:center;justify-content:space-between}
+    h1{margin:0;font-size:clamp(20px,3.5vw,36px);background:linear-gradient(90deg,#fff,#c7d2fe);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--text);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,#7c5cff55,#22d3ee33);border-color:rgba(124,92,255,0.4)}
+    .main{display:flex;gap:16px;margin-top:12px}
+    .play{flex:1;min-height:420px;position:relative;overflow:hidden;border-radius:12px;padding:12px;border:1px dashed rgba(255,255,255,0.03)}
+    .sidebar{width:300px;padding:10px;border-radius:10px;background:rgba(0,0,0,0.12)}
+    .hud{display:flex;gap:10px;flex-wrap:wrap}
+    .score{font-weight:800;font-size:20px}
+    #noBtn{position:absolute;padding:10px 18px;border-radius:999px}
+    .floating-letter{position:absolute;font-weight:900;opacity:.12;pointer-events:none;mix-blend-mode:screen}
+    .emoji{position:fixed;top:-60px;font-size:32px;pointer-events:none}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:999}
+    .modal .box{background:linear-gradient(180deg,#081226,#0b1730);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);max-width:90vw}
+    .achieve{position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.6);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06)}
+    .small{font-size:13px;opacity:.9}
+    .matrix{position:absolute;inset:0;z-index:1;pointer-events:none}
+    .hidden{display:none}
+    .progress{height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#22d3ee);width:0%}
+    .top-actions{display:flex;gap:8px}
+    @media(max-width:900px){.main{flex-direction:column}.sidebar{width:100%}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card" id="gameCard">
       <header>
-        <h1 id="title">СОСАЛ? — Мем‑аркада</h1>
+        <h1>СОСАЛ? — Мем‑Аркада (MAX)</h1>
         <div class="controls">
-          <label class="muted">Тема
-            <select id="themeSel">
-              <option value="neon">Неон</option>
-              <option value="matrix">Матрица</option>
-              <option value="fire">Огонь</option>
-              <option value="ice">Лёд</option>
-            </select>
-          </label>
-          <label class="muted">Тайм <input id="roundTime" type="range" min="10" max="60" value="30"></label>
-          <button class="btn" id="resetScores">Сбросить рекорды</button>
+          <div class="top-actions">
+            <button class="btn" id="helpBtn">Как играть</button>
+            <button class="btn" id="exportBtn">Экспорт рекордов</button>
+            <button class="btn" id="importBtn">Импорт рекордов</button>
+            <button class="btn" id="settingsBtn">Настройки</button>
+            <button class="btn primary" id="startBtn">Старт</button>
+          </div>
         </div>
       </header>
 
       <div class="main">
         <section class="play" id="playarea" aria-label="Игровая зона">
-          <div class="hud" style="position:relative;z-index:12;margin-bottom:8px">
+          <div class="hud" style="position:relative;z-index:30;margin-bottom:8px">
             <div>Очки: <span class="score" id="score">0</span></div>
             <div>Рекорд: <span id="highscore">0</span></div>
             <div>Комбо: <span id="combo">x1</span></div>
@@ -81,262 +61,229 @@
             <div>Время: <span id="timeLeft">30</span>s</div>
           </div>
 
-          <!-- floating title letters -->
           <div id="lettersLayer"></div>
 
-          <!-- NO button starts here -->
-          <button class="btn no" id="noBtn">Нет</button>
-          <button class="btn yes" id="yesBtn" style="position:relative;left:auto;top:auto">Да</button>
+          <button class="btn" id="noBtn">Нет</button>
+          <button class="btn" id="yesBtn" style="position:relative;left:auto;top:auto">Да</button>
 
-          <!-- matrix effect -->
           <canvas id="matrix" class="matrix"></canvas>
         </section>
 
-        <aside class="leader">
-          <h3>Топ‑5 рекордов</h3>
-          <ol id="board"></ol>
-          <div style="margin-top:12px">
-            <button class="btn" id="startBtn">Старт</button>
-            <button class="btn" id="pauseBtn">Пауза</button>
+        <aside class="sidebar">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="small">Тема</div>
+              <select id="themeSel" class="small">
+                <option value="neon">Неон</option>
+                <option value="matrix">Матрица</option>
+                <option value="fire">Огонь</option>
+                <option value="ice">Лёд</option>
+              </select>
+            </div>
+            <div>
+              <div class="small">Сложность</div>
+              <select id="modeSel" class="small">
+                <option value="easy">Лёгкий</option>
+                <option value="normal" selected>Норм</option>
+                <option value="hell">Адский</option>
+              </select>
+            </div>
           </div>
-          <div style="margin-top:12px;font-size:13px" class="muted">Сохранено в localStorage · Секреты: amogus / shrek / rick</div>
+
+          <div style="margin-top:12px">
+            <div class="small">Время раунда: <span id="roundTimeLabel">30</span>s</div>
+            <input id="roundTime" type="range" min="10" max="90" value="30">
+            <div class="progress" style="margin-top:8px"><i id="progressBar"></i></div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h3 style="margin:0 0 8px 0">Топ‑5 рекордов</h3>
+            <ol id="board"></ol>
+            <div style="margin-top:8px;display:flex;gap:6px"><button class="btn" id="clearBtn">Очистить</button><button class="btn" id="copyBtn">Копировать</button></div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Ачивки</h4>
+            <ul id="achList" class="small"></ul>
+          </div>
         </aside>
       </div>
     </div>
   </div>
 
-  <!-- modal for boss / rickroll / shrek -->
-  <div class="modal" id="modal">
-    <div class="box" id="modalBox"></div>
-  </div>
+  <div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+  <div class="achieve hidden" id="achPopup"></div>
 
   <!-- sounds -->
   <audio id="sClick" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
   <audio id="sWin" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
   <audio id="sBoss" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
   <audio id="sShrek" src="https://actions.google.com/sounds/v1/human_voices/evil_laugh.ogg"></audio>
+  <audio id="sRick" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
 
   <script>
-    /* ======= Game State ======= */
+    // --- State ---
+    const playarea = document.getElementById('playarea');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
     const scoreEl = document.getElementById('score');
-    const highscoreEl = document.getElementById('highscore');
+    const highEl = document.getElementById('highscore');
     const comboEl = document.getElementById('combo');
     const timeLeftEl = document.getElementById('timeLeft');
     const roundNumEl = document.getElementById('roundNum');
     const boardEl = document.getElementById('board');
-    const playarea = document.getElementById('playarea');
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const modal = document.getElementById('modal');
-    const modalBox = document.getElementById('modalBox');
-    const title = document.getElementById('title');
+    const achList = document.getElementById('achList');
 
     const sClick = document.getElementById('sClick');
     const sWin = document.getElementById('sWin');
     const sBoss = document.getElementById('sBoss');
     const sShrek = document.getElementById('sShrek');
+    const sRick = document.getElementById('sRick');
 
-    let score = 0;
-    let highscore = Number(localStorage.getItem('sosal_high')||0);
-    highscoreEl.textContent = highscore;
-
-    let combo = 0; let comboTimer = null; let multiplier = 1;
-    let running = false; let paused = false;
-    let roundTimeInput = document.getElementById('roundTime');
+    let score = 0; let high = Number(localStorage.getItem('sosal_high')||0); highEl.textContent = high;
+    let combo = 0; let multiplier = 1; let comboTimer = null;
+    let running=false, paused=false; let round=1;
+    let roundTimeInput = document.getElementById('roundTime'); let roundTimeLabel = document.getElementById('roundTimeLabel');
     let timeLeft = Number(roundTimeInput.value);
-    timeLeftEl.textContent = timeLeft;
-    let round = 1;
+    timeLeftEl.textContent = timeLeft; roundNumEl.textContent = round;
 
-    // leaderboard top5
-    function loadBoard(){
-      const data = JSON.parse(localStorage.getItem('sosal_board')||'[]');
-      boardEl.innerHTML = '';
-      for(let i=0;i<5;i++){ const item=data[i]; const li=document.createElement('li'); li.textContent = item? `${item.name} — ${item.score}` : '—'; boardEl.appendChild(li); }
-    }
+    // leaderboard
+    function loadBoard(){ const data = JSON.parse(localStorage.getItem('sosal_board')||'[]'); boardEl.innerHTML=''; for(let i=0;i<5;i++){ const li=document.createElement('li'); if(data[i]) li.textContent = `${data[i].name} — ${data[i].score}`; else li.textContent='—'; boardEl.appendChild(li);} }
     loadBoard();
 
-    /* ===== Floating letters (летят как в космосе) ===== */
-    const lettersLayer = document.getElementById('lettersLayer');
-    const phrase = 'СОСАЛ?';
-    function spawnLetters(){
-      lettersLayer.innerHTML = '';
-      for(let i=0;i<phrase.length;i++){
-        const el = document.createElement('div');
-        el.className='floating-letter';
-        el.textContent = phrase[i];
-        const x = Math.random()*70+10; const y = Math.random()*50+10;
-        el.style.left = x+'%'; el.style.top = y+'%';
-        el.style.transform = `translate(-50%,-50%) rotate(${Math.random()*40-20}deg)`;
-        el.style.fontSize = (48 + Math.random()*80) + 'px';
-        lettersLayer.appendChild(el);
-        // animate drift
-        (function(el){
-          const dx = (Math.random()*2-1)*30; const dy = (Math.random()*2-1)*30; const dur = 8000+Math.random()*10000;
-          el.animate([{transform:el.style.transform},{transform:`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${Math.random()*20-10}deg)`},{transform:el.style.transform}],{duration:dur,iterations:Infinity,direction:'alternate',easing:'ease-in-out'});
-        })(el);
-      }
-    }
+    // achievements (simple set)
+    const achievements = [ {id:'first_click',name:'Первый клик',desc:'Нажми Да или поймай Нет в первый раз',done:false}, {id:'combo5',name:'Комбо 5',desc:'Набери комбо 5',done:false}, {id:'boss_slayer',name:'Босс‑убийца',desc:'Победи босса',done:false}, {id:'shrek_friend',name:'Друг Шрека',desc:'Активируй секрет shrek',done:false}, {id:'rickrolled',name:'Рикролл',desc:'Попался на рикролл',done:false}, {id:'high_100',name:'100 очков',desc:'Набери 100 очков',done:false} ];
+    function renderAchievements(){ achList.innerHTML=''; achievements.forEach(a=>{ const li=document.createElement('li'); li.textContent = `${a.name} ${a.done? '✅':''} — ${a.desc}`; achList.appendChild(li); }); }
+    renderAchievements();
+
+    function grantAchievement(id){ const a = achievements.find(x=>x.id===id); if(a && !a.done){ a.done=true; renderAchievements(); showAch(a.name); localStorage.setItem('sosal_ach', JSON.stringify(achievements)); }}
+    // restore ach
+    const savedAch = JSON.parse(localStorage.getItem('sosal_ach')||'null'); if(savedAch){ for(const s of savedAch){ const exist=achievements.find(a=>a.id===s.id); if(exist) exist.done = s.done; } renderAchievements(); }
+
+    function showAch(text){ const box = document.getElementById('achPopup'); box.textContent = '🏆 '+text; box.classList.remove('hidden'); box.animate([{transform:'translateY(20px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:400}); setTimeout(()=>box.classList.add('hidden'),2200); }
+
+    // floating letters
+    const lettersLayer = document.getElementById('lettersLayer'); const phrase = 'СОСАЛ?'; function spawnLetters(){ lettersLayer.innerHTML=''; for(let i=0;i<phrase.length;i++){ const el=document.createElement('div'); el.className='floating-letter'; el.textContent=phrase[i]; el.style.left = (10 + Math.random()*80)+'%'; el.style.top = (8 + Math.random()*80)+'%'; el.style.fontSize = (48 + Math.random()*100)+'px'; lettersLayer.appendChild(el); (function(el){ const dx=(Math.random()*2-1)*60; const dy=(Math.random()*2-1)*60; const dur=8000+Math.random()*12000; el.animate([{transform:`translate(-50%,-50%) rotate(${Math.random()*20-10}deg)`},{transform:`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) rotate(${Math.random()*20-10}deg)`},{transform:`translate(-50%,-50%) rotate(${Math.random()*20-10}deg)`}],{duration:dur,iterations:Infinity,direction:'alternate',easing:'ease-in-out'}); })(el); } }
     spawnLetters();
 
-    /* ===== Matrix background ===== */
-    const matrixCanvas = document.getElementById('matrix');
-    const mctx = matrixCanvas.getContext('2d');
-    function resizeMatrix(){matrixCanvas.width=playarea.clientWidth;matrixCanvas.height=playarea.clientHeight;}
-    resizeMatrix();window.addEventListener('resize',resizeMatrix);
-    let matrixRunning=false;
-    function startMatrix(){matrixCanvas.style.display='block';matrixRunning=true;const cols = Math.floor(matrixCanvas.width/14);const ypos = Array(cols).fill(0);
-      function mloop(){mctx.fillStyle='rgba(0,0,0,0.05)';mctx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);mctx.fillStyle='#0f0';mctx.font='14px monospace';for(let i=0;i<cols;i++){const text = String.fromCharCode(33+Math.random()*96);mctx.fillText(text,i*14,ypos[i]*14); if(ypos[i]*14 > matrixCanvas.height && Math.random()>0.975) ypos[i]=0; ypos[i]++;}
-        if(matrixRunning) requestAnimationFrame(mloop); else mctx.clearRect(0,0,matrixCanvas.width,matrixCanvas.height);
-      }
-      mloop();
+    // confetti
+    const confCanvas = document.createElement('canvas'); confCanvas.id='conf'; confCanvas.style.position='fixed'; confCanvas.style.inset='0'; confCanvas.style.pointerEvents='none'; document.body.appendChild(confCanvas); const cctx = confCanvas.getContext('2d'); function resizeConf(){confCanvas.width=innerWidth;confCanvas.height=innerHeight;} resizeConf(); window.addEventListener('resize',resizeConf);
+    let confs=[]; function burst(x,y){ for(let i=0;i<140;i++){ confs.push({x,y,vx:(Math.random()*2-1)*8,vy:(Math.random()*2-1)*8-5,g:0.18+Math.random()*0.2,s:3+Math.random()*6,r:Math.random()*Math.PI,vr:(Math.random()*2-1)*0.4,life:60+Math.random()*80}); } if(!confLoop) confLoop = requestAnimationFrame(confettiLoop); }
+    let confLoop=0; function confettiLoop(){ cctx.clearRect(0,0,confCanvas.width,confCanvas.height); confs = confs.filter(p=>p.life>0); for(const p of confs){ p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--; cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.r); cctx.fillStyle = `hsl(${(p.x+p.y)%360},80%,60%)`; cctx.fillRect(-p.s/2,-p.s/2,p.s,p.s); cctx.restore(); } if(confs.length) confLoop = requestAnimationFrame(confettiLoop); else { cancelAnimationFrame(confLoop); confLoop=0; } }
+
+    // matrix effect
+    const matrix = document.getElementById('matrix'); const mctx = matrix.getContext('2d'); function resizeMatrix(){ matrix.width = playarea.clientWidth; matrix.height = playarea.clientHeight; matrix.style.left = playarea.offsetLeft+'px'; matrix.style.top = playarea.offsetTop+'px'; } resizeMatrix(); window.addEventListener('resize',resizeMatrix);
+    let matrixAnim=false;
+    function startMatrix(){ matrix.style.display='block'; matrixAnim=true; const cols = Math.floor(matrix.width/14); const ypos=Array(cols).fill(0); function mloop(){ mctx.fillStyle='rgba(0,0,0,0.06)'; mctx.fillRect(0,0,matrix.width,matrix.height); mctx.fillStyle='#0f0'; mctx.font='14px monospace'; for(let i=0;i<cols;i++){ const text = String.fromCharCode(33+Math.random()*96); mctx.fillText(text,i*14,ypos[i]*14); if(ypos[i]*14>matrix.height && Math.random()>0.975) ypos[i]=0; ypos[i]++; } if(matrixAnim) requestAnimationFrame(mloop); else { mctx.clearRect(0,0,matrix.width,matrix.height); } } mloop(); }
+    function stopMatrix(){ matrixAnim=false; matrix.style.display='none'; }
+
+    // emoji rain
+    function spawnEmoji(){ const e = document.createElement('div'); e.className='emoji'; e.textContent = ['😂','🔥','😈','🍆','👽','💀'][Math.floor(Math.random()*6)]; e.style.left = Math.random()*100+'vw'; e.style.fontSize = (12 + Math.random()*48)+'px'; document.body.appendChild(e); const dur = 2500 + Math.random()*3000; requestAnimationFrame(()=>{ e.style.transition = `transform ${dur}ms linear, opacity ${dur}ms`; e.style.transform = `translateY(${110 + Math.random()*20}vh)`; e.style.opacity='0'; }); setTimeout(()=>e.remove(),dur+100); }
+
+    // fake buttons
+    function spawnFake(){ const f = document.createElement('button'); f.className='btn'; f.textContent = Math.random()<0.6 ? (Math.random()<0.5 ? 'Да' : 'Нет') : (Math.random()<0.5 ? 'Подожди' : 'Ложь'); f.style.position='absolute'; f.style.left = (10 + Math.random()*70)+'%'; f.style.top = (10 + Math.random()*60)+'%'; f.onclick = ()=>{ f.remove(); showToast('Фейк!'); }; playarea.appendChild(f); setTimeout(()=>f.remove(),2500); }
+
+    function showToast(txt){ const el = document.createElement('div'); el.textContent = txt; el.style.position='fixed'; el.style.left='50%'; el.style.top='20%'; el.style.transform='translateX(-50%)'; el.style.padding='8px 12px'; el.style.background='rgba(0,0,0,0.6)'; el.style.borderRadius='8px'; document.body.appendChild(el); setTimeout(()=>el.remove(),900); }
+
+    // boss modal
+    function spawnBoss(){ modalOpen(); let hits=0; const need = 5 + Math.floor(Math.random()*12); modalBox.innerHTML = `<h3>БОСС #${round}</h3><p>Ударь кнопку ${need} раз!</p><div style='display:flex;gap:10px;align-items:center;margin-top:10px'><button id='bossBtn' class='btn primary' style='padding:16px 28px;font-size:18px'>УДАР</button><div id='bossHits'>0/${need}</div></div>`; document.getElementById('bossBtn').onclick = ()=>{ hits++; document.getElementById('bossHits').textContent = hits + '/' + need; sBoss.currentTime=0; sBoss.play(); if(hits>=need){ modalClose(); grantAchievement('boss_slayer'); updateScore(need*12); burst(window.innerWidth/2,window.innerHeight/2); } } }
+
+    function modalOpen(){ document.getElementById('modal').style.display='flex'; }
+    function modalClose(){ document.getElementById('modal').style.display='none'; document.getElementById('modalBox').innerHTML=''; }
+    document.getElementById('modal').addEventListener('click', e=>{ if(e.target.id==='modal') modalClose(); });
+
+    // scoring and combo
+    function updateScore(n){ score += n * multiplier; scoreEl.textContent = score; if(score>high){ high = score; highEl.textContent = high; localStorage.setItem('sosal_high', high); } if(score>=100) grantAchievement('high_100'); }
+    function addCombo(){ combo++; multiplier = 1 + Math.floor(combo/5); comboEl.textContent = 'x'+multiplier; if(comboTimer) clearTimeout(comboTimer); comboTimer = setTimeout(()=>{ combo=0; multiplier=1; comboEl.textContent='x1'; },3000); if(combo>=5) grantAchievement('combo5'); }
+
+    // noBtn behaviour
+    function moveNo(){ if(!running || paused) return; const rect = playarea.getBoundingClientRect(); const b = noBtn.getBoundingClientRect(); const pad=8; const mode = document.getElementById('modeSel').value; const speed = mode==='easy'?1:mode==='normal'?1.8:3.2; if(Math.random() < 0.14 * speed){ // teleport
+      noBtn.style.left = (pad + Math.random()*(rect.width - b.width - pad*2)) + 'px'; noBtn.style.top = (pad + Math.random()*(rect.height - b.height - pad*2)) + 'px';
+    } else { // smooth
+      const nx = pad + Math.random()*(rect.width-b.width-pad*2); const ny = pad + Math.random()*(rect.height-b.height-pad*2);
+      noBtn.animate([{left:noBtn.style.left || '20px', top:noBtn.style.top || '20px'},{left:nx+'px', top:ny+'px'}],{duration:600/speed,fill:'forwards',easing:'cubic-bezier(.2,.9,.2,1)'});
     }
-    function stopMatrix(){matrixRunning=false;matrixCanvas.style.display='none'}
+    if(Math.random() < 0.12 * speed){ noBtn.textContent='Да 😈'; noBtn.onclick = ()=>{ yesClick(); noBtn.textContent='Нет'; noBtn.onclick=null; } else noBtn.textContent='Нет'; if(Math.random()<0.06) spawnFake(); if(Math.random()<0.08) spawnEmoji(); }
 
-    /* ===== Emoji rain ===== */
-    function spawnEmoji(){const e=document.createElement('div');e.className='emoji';e.textContent=['😂','🔥','😈','🍆','👽','💀'][Math.floor(Math.random()*6)];e.style.left=Math.random()*100+'vw';e.style.fontSize=(16+Math.random()*40)+'px';document.body.appendChild(e);const dur=3000+Math.random()*4000;e.style.transition=`transform ${dur}ms linear, opacity ${dur}ms`;setTimeout(()=>{e.style.transform=`translateY(${110+Math.random()*20}vh)`;e.style.opacity='0'},20);setTimeout(()=>e.remove(),dur+100)}
+    noBtn.addEventListener('pointerenter', ()=>{ if(!running || paused) return; sClick.currentTime=0; sClick.play(); addCombo(); updateScore(1*multiplier); moveNo(); if(Math.random()<0.06) spawnBoss(); if(Math.random()<0.02) shake(); if(Math.random()<0.03) spawnEmoji(); grantAchievement('first_click'); });
 
-    /* ===== Boss (кнопка‑босс) ===== */
-    function spawnBoss(){
-      // modal boss with big button that needs several clicks
-      modal.style.display='flex';
-      modalBox.innerHTML = `<h3>БОСС!</h3><p>Нажми на большую кнопку ${5+Math.floor(Math.random()*10)} раз!</p><div style="display:flex;gap:10px;align-items:center;margin-top:12px"><button id='bossBtn' class='btn' style='padding:22px 40px;font-size:20px'>УДАРИТЬ</button><div id='bossHits'>0</div></div>`;
-      let hits=0; const need = 5+Math.floor(Math.random()*10);
-      document.getElementById('bossHits').textContent=`0/${need}`;
-      document.getElementById('bossBtn').onclick = ()=>{hits++;document.getElementById('bossHits').textContent=`${hits}/${need}`;sBoss.currentTime=0;sBoss.play(); if(hits>=need){modal.style.display='none';updateScore(need*10);burst(window.innerWidth/2,window.innerHeight/2)}};
-    }
+    yesBtn.addEventListener('click', ()=>{ yesClick(); });
+    function yesClick(){ sWin.currentTime=0; sWin.play(); updateScore(10*multiplier); burst(window.innerWidth/2,window.innerHeight/2); addCombo(); }
 
-    /* ===== Scoring, combo, UI helpers ===== */
-    function updateScore(n){score += n * multiplier; scoreEl.textContent = score; if(score>highscore){highscore = score; highscoreEl.textContent = highscore; localStorage.setItem('sosal_high',highscore);} }
+    // timer & rounds
+    const startBtn = document.getElementById('startBtn'); const pauseBtn = document.getElementById('pauseBtn'); let timerId=null; let progressId=null;
+    function startGame(){ if(running) return; running=true; paused=false; score=0; scoreEl.textContent=0; round=1; roundNumEl.textContent=1; timeLeft = Number(roundTimeInput.value); timeLeftEl.textContent = timeLeft; spawnLetters(); startRound(); }
+    function startRound(){ clearInterval(timerId); const total = Number(roundTimeInput.value); let t = timeLeft; updateProgress(t,total); timerId = setInterval(()=>{ if(paused) return; t--; timeLeft = t; timeLeftEl.textContent = t; updateProgress(t,total); if(t<=0){ clearInterval(timerId); onRoundEnd(); } },1000); }
+    function updateProgress(cur,total){ const pct = Math.max(0, Math.min(100, (cur/total*100))); document.getElementById('progressBar').style.width = pct + '%'; }
+    function onRoundEnd(){ // reward and increase difficulty
+      updateScore(20*round); round++; roundNumEl.textContent = round; // spawn chaos
+      for(let i=0;i<3+round;i++){ if(Math.random()<0.7) spawnFake(); if(Math.random()<0.7) spawnEmoji(); }
+      if(round%3===0) setTimeout(spawnBoss,600);
+      // shorten time but not too much
+      timeLeft = Math.max(8, Number(roundTimeInput.value) - Math.floor(round*2)); timeLeftEl.textContent=timeLeft; startRound(); }
 
-    function addCombo(){combo++; multiplier = 1 + Math.floor(combo/5); comboEl.textContent = 'x'+multiplier; if(comboTimer) clearTimeout(comboTimer); comboTimer = setTimeout(()=>{combo=0;multiplier=1;comboEl.textContent='x1'},3000)}
+    // pause control via settings modal
+    document.getElementById('settingsBtn').addEventListener('click', ()=>{ modalOpen(); document.getElementById('modalBox').innerHTML = `<h3>Настройки</h3>
+      <div style='margin-top:8px'><label>Звук <input id='chkSound' type='checkbox' ${localStorage.getItem('sosal_sound')!=='false'?'checked':''}></label></div>
+      <div style='margin-top:8px'><label>Вибрация (мобильные) <input id='chkVib' type='checkbox' ${localStorage.getItem('sosal_vib')==='true'?'checked':''}></label></div>
+      <div style='margin-top:12px'><button class='btn' id='closeSets'>Закрыть</button></div>`; document.getElementById('closeSets').onclick = ()=>{ const sound = document.getElementById('chkSound').checked; localStorage.setItem('sosal_sound', sound); const vib = document.getElementById('chkVib').checked; localStorage.setItem('sosal_vib', vib); modalClose(); } });
 
-    /* confetti simple */
-    const confCanvas = document.getElementById('fx') || (function(){ const c=document.createElement('canvas'); c.id='fx'; document.body.appendChild(c); return c})();
-    const cctx = confCanvas.getContext('2d'); function resizeConf(){confCanvas.width=window.innerWidth;confCanvas.height=window.innerHeight;} resizeConf(); window.addEventListener('resize',resizeConf);
-    let confs = [];
-    function burst(x,y){ for(let i=0;i<120;i++){confs.push({x,y,vx:(Math.random()*2-1)*8,vy:(Math.random()*2-1)*8-4,g:0.18+sRand(0,.12),s:3+Math.random()*6,r:Math.random()*Math.PI,vr:(Math.random()*2-1)*0.3,life:60+Math.random()*60}) } if(!confLoop) confLoop = requestAnimationFrame(confettiLoop); }
-    function sRand(a,b){return a + Math.random()*(b-a)}
-    let confLoop=0; function confettiLoop(){ cctx.clearRect(0,0,confCanvas.width,confCanvas.height); confs = confs.filter(p=>p.life>0); for(const p of confs){ p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; p.life--; cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.r); cctx.fillStyle = `hsl(${(p.x+p.y)%360},80%,60%)`; cctx.fillRect(-p.s/2,-p.s/2,p.s,p.s); cctx.restore() } if(confs.length) confLoop = requestAnimationFrame(confettiLoop); else { cancelAnimationFrame(confLoop); confLoop=0; } }
+    // help
+    document.getElementById('helpBtn').addEventListener('click', ()=>{ modalOpen(); modalBox.innerHTML = `<h3>Как играть</h3><ol><li>Нажимай «Да» или пытайся поймать "Нет", который убегает.</li><li>За поимку и клики даются очки — чем больше комбо, тем выше множитель.</li><li>Каждый раунд длится выбранное время; раунды усложняются.</li><li>Секреты: напиши в любой момент в клавиатуре слова <code>amogus</code>, <code>shrek</code>, <code>rick</code>.</li></ol><div style='margin-top:10px'><button class='btn' id='closeHelp'>Закрыть</button></div>`; document.getElementById('closeHelp').onclick = ()=>modalClose(); });
 
-    /* ===== Fake buttons generator ===== */
-    function spawnFakeButton(){const f=document.createElement('button');f.className='btn';f.textContent = Math.random()<0.6 ? (Math.random()<0.5 ? 'Да' : 'Нет') : (Math.random()<0.5 ? 'Подожди' : 'Ложь'); f.style.position='absolute'; f.style.left = (10 + Math.random()*70) +'%'; f.style.top = (10 + Math.random()*60) +'%'; f.onclick = ()=>{f.remove(); subtitleFlash('Фейк! +0');}; document.querySelector('.play').appendChild(f); setTimeout(()=>f.remove(),2500)}
+    // export/import
+    document.getElementById('exportBtn').addEventListener('click', ()=>{ const data = {board: JSON.parse(localStorage.getItem('sosal_board')||'[]'), high: localStorage.getItem('sosal_high')||0, ach: JSON.parse(localStorage.getItem('sosal_ach')||'[]')}; const blob = new Blob([JSON.stringify(data, null, 2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'sosal_backup.json'; a.click(); URL.revokeObjectURL(url); });
+    document.getElementById('importBtn').addEventListener('click', ()=>{ const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange = ()=>{ const f = inp.files[0]; const reader = new FileReader(); reader.onload = ()=>{ try{ const data = JSON.parse(reader.result); if(data.board) localStorage.setItem('sosal_board', JSON.stringify(data.board)); if(data.high) localStorage.setItem('sosal_high', data.high); if(data.ach) localStorage.setItem('sosal_ach', JSON.stringify(data.ach)); loadBoard(); alert('Импорт завершён'); }catch(e){ alert('Ошибка файла'); } }; reader.readAsText(f); }; inp.click(); });
 
-    function subtitleFlash(txt){const old = title.textContent; title.textContent = txt; setTimeout(()=>title.textContent = 'СОСАЛ? — Мем‑аркада',800)}
+    // clear/copy leaderboard
+    document.getElementById('clearBtn').addEventListener('click', ()=>{ if(confirm('Очистить таблицу рекордов?')){ localStorage.removeItem('sosal_board'); localStorage.removeItem('sosal_high'); loadBoard(); high=0; highEl.textContent=0; } });
+    document.getElementById('copyBtn').addEventListener('click', ()=>{ navigator.clipboard.writeText(JSON.stringify(JSON.parse(localStorage.getItem('sosal_board')||'[]'), null, 2)).then(()=>alert('Скопировано')); });
 
-    /* ===== Themes and effects ===== */
-    const themeSel = document.getElementById('themeSel');
-    function applyTheme(t){ document.body.dataset.theme = t; if(t==='matrix'){startMatrix()} else {stopMatrix()} if(t==='fire'){ document.body.style.background='linear-gradient(120deg,#2b0000,#4b0710)'; } else if(t==='ice'){ document.body.style.background='linear-gradient(120deg,#021428,#0b2a44)'; } else if(t==='neon'){ document.body.style.background='linear-gradient(120deg,#071021,#0f1130)'; } }
-    themeSel.value = localStorage.getItem('sosal_theme') || 'neon'; applyTheme(themeSel.value);
-    themeSel.addEventListener('change',()=>{localStorage.setItem('sosal_theme',themeSel.value); applyTheme(themeSel.value)});
+    // finish game and save to board
+    function finishGame(){ running=false; clearInterval(timerId); const name = prompt('Игра окончена! Введите имя для таблицы (max 12)') || 'anon'; const entry = {name:name.slice(0,12), score}; const data = JSON.parse(localStorage.getItem('sosal_board')||'[]'); data.push(entry); data.sort((a,b)=>b.score-a.score); localStorage.setItem('sosal_board', JSON.stringify(data.slice(0,5))); loadBoard(); localStorage.setItem('sosal_high', Math.max(Number(localStorage.getItem('sosal_high')||0), score)); high = Number(localStorage.getItem('sosal_high')); highEl.textContent = high; document.getElementById('noBtn').style.display='none'; }
 
-    /* ===== No button behaviour (главная механика) ===== */
-    function moveNo(){ if(!running || paused) return; // choose behavior by difficulty and round
-      const rect = document.querySelector('.play').getBoundingClientRect(); const b = noBtn.getBoundingClientRect(); const pad=8;
-      const difficulty = getDifficulty();
-      const speedFactor = difficulty==='easy' ? 1 : difficulty==='normal' ? 1.8 : 3.2;
-      // random teleport or smooth move
-      if(Math.random() < 0.12 * speedFactor){ // teleport
-        noBtn.style.left = (pad + Math.random()*(rect.width - b.width - pad*2)) + 'px'; noBtn.style.top = (pad + Math.random()*(rect.height - b.height - pad*2)) + 'px';
-      } else { // animated move
-        const nx = pad + Math.random()*(rect.width-b.width-pad*2); const ny = pad + Math.random()*(rect.height-b.height-pad*2);
-        noBtn.animate([{left:noBtn.style.left || '20px', top:noBtn.style.top || '20px'},{left:nx+'px', top:ny+'px'}],{duration:600/speedFactor,fill:'forwards',easing:'cubic-bezier(.2,.9,.2,1)'});
-      }
-      // sometimes turn into a Yes
-      if(Math.random() < 0.12 * speedFactor){ noBtn.textContent='Да 😈'; noBtn.onclick = ()=>{ yesBtnClick(); noBtn.textContent='Нет'; noBtn.onclick=null }; }
-    }
-
-    noBtn.addEventListener('pointerenter',()=>{ if(!running || paused) return; sClick.currentTime=0; sClick.play(); addCombo(); updateScore(1*multiplier); moveNo(); if(Math.random()<0.07) spawnFakeButton(); if(Math.random()<0.03) spawnEmoji(); if(Math.random()<0.02) spawnBoss(); if(Math.random()<0.05 && round>2) shakeScreen(); });
-
-    function yesBtnClick(){ sWin.currentTime=0; sWin.play(); updateScore(10*multiplier); addCombo(); burst(window.innerWidth/2, window.innerHeight/2); }
-    yesBtn.addEventListener('click', yesBtnClick);
-
-    /* ===== timer / rounds / start / pause ===== */
-    function getDifficulty(){return document.getElementById('mode')?document.getElementById('mode').value: (localStorage.getItem('sosal_mode')||'normal')}
-    // ensure mode exists (backward)
-    if(!document.getElementById('mode')){
-      const sel=document.createElement('select'); sel.id='mode'; sel.innerHTML='<option value="easy">Лёгкий</option><option value="normal" selected>Норм</option><option value="hell">Адский</option>'; document.querySelector('.controls').appendChild(sel);
-    }
-
-    function startGame(){ if(running) return; running=true; paused=false; score=0; scoreEl.textContent=0; round=1; roundNumEl.textContent=1; timeLeft = Number(roundTimeInput.value); timeLeftEl.textContent=timeLeft; spawnLetters(); startRoundTimer(); }
-    function pauseGame(){ paused = !paused; pauseBtn.textContent = paused ? 'Возобновить' : 'Пауза'; }
-
-    function endRound(){ // increase difficulty a bit and continue
-      round++; roundNumEl.textContent = round; // give small bonus and spawn chaos
-      updateScore(20*round);
-      // make it slightly harder by spawning more fake buttons and emojis
-      for(let i=0;i<3+round;i++){ if(Math.random()<0.6) spawnFakeButton(); if(Math.random()<0.6) spawnEmoji(); }
-      // if rounds multiple of 3, spawn boss
-      if(round%3===0) setTimeout(spawnBoss,800);
-      // shorten timer progressively
-      timeLeft = Math.max(8, Number(roundTimeInput.value) - Math.floor(round*2)); timeLeftEl.textContent=timeLeft; startRoundTimer();
-    }
-
-    let roundTimer = null;
-    function startRoundTimer(){ if(roundTimer) clearInterval(roundTimer); roundTimer = setInterval(()=>{ if(paused) return; timeLeft--; timeLeftEl.textContent=timeLeft; if(timeLeft<=0){ clearInterval(roundTimer); endRound(); } },1000); }
-
-    startBtn.addEventListener('click', ()=>{ startGame(); })
-    pauseBtn.addEventListener('click', ()=>{ pauseGame(); })
-
-    // update leaderboard at end of game (on manual stop)
-    function finishGame(){ running=false; clearInterval(roundTimer); // prompt for name
-      const name = prompt('Игра окончена! Введите имя для таблицы рекордов (max 12)') || 'anon'; const entry = {name: name.slice(0,12), score};
-      // save to board
-      const data = JSON.parse(localStorage.getItem('sosal_board')||'[]'); data.push(entry); data.sort((a,b)=>b.score-a.score); localStorage.setItem('sosal_board', JSON.stringify(data.slice(0,5))); loadBoard();
-      // reset some UI
-      localStorage.setItem('sosal_high', Math.max(Number(localStorage.getItem('sosal_high')||0), score)); highscore = Number(localStorage.getItem('sosal_high')); highscoreEl.textContent=highscore; document.getElementById('noBtn').style.display='none';
-    }
-
-    // quick end when modal closed after boss
-    modal.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none' });
-
-    // reset scores
-    document.getElementById('resetScores').addEventListener('click',()=>{ if(confirm('Сбросить рекорды и таблицу?')){ localStorage.removeItem('sosal_board'); localStorage.removeItem('sosal_high'); loadBoard(); highscore=0; highscoreEl.textContent=0 } });
-
-    /* ===== secret codes: amogus / shrek / rick ===== */
+    // secrets
     const buffer = [];
-    const secrets = {
-      'amogus': ()=>{ // spawn red amogus obstacles that cover buttons
-        for(let i=0;i<6;i++){ const d=document.createElement('div'); d.textContent='⛔'; d.style.position='absolute'; d.style.left=(10+Math.random()*70)+'%'; d.style.top=(10+Math.random()*60)+'%'; d.style.fontSize='48px'; d.style.zIndex=50; document.querySelector('.play').appendChild(d); setTimeout(()=>d.remove(),4000); }
-      },
-      'shrek': ()=>{ // show shrek modal and +50 points
-        modal.style.display='flex'; modalBox.innerHTML=`<h3>Шрек одобряет</h3><img src="https://upload.wikimedia.org/wikipedia/en/3/33/Shrek_%28character%29.png" alt="shrek" style="width:160px"><p>+50 очков</p><button class='btn' id='okShrek'>OK</button>`; document.getElementById('okShrek').onclick=()=>{ sShrek.currentTime=0; sShrek.play(); updateScore(50); modal.style.display='none' }
-      },
-      'rick': ()=>{ // rickroll in modal
-        modal.style.display='flex'; modalBox.innerHTML=`<h3>Рикролл!</h3><iframe width="420" height="236" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><button class='btn' id='closeRick'>Закрыть</button>`; document.getElementById('closeRick').onclick=()=>modal.style.display='none'; }
-    };
+    const secrets = { amogus:()=>{ for(let i=0;i<6;i++){ const d = document.createElement('div'); d.textContent='👽'; d.style.position='absolute'; d.style.left=(10+Math.random()*70)+'%'; d.style.top=(10+Math.random()*60)+'%'; d.style.fontSize='48px'; d.style.zIndex=60; playarea.appendChild(d); setTimeout(()=>d.remove(),4000);} }, shrek:()=>{ modalOpen(); modalBox.innerHTML = `<h3>Шрек одобряет</h3><img src="https://upload.wikimedia.org/wikipedia/en/3/33/Shrek_%28character%29.png" style='width:160px'><p>+50 очков!</p><div style='margin-top:8px'><button class='btn' id='okShrek'>OK</button></div>`; document.getElementById('okShrek').onclick = ()=>{ sShrek.currentTime=0; sShrek.play(); updateScore(50); grantAchievement('shrek_friend'); modalClose(); } }, rick:()=>{ modalOpen(); modalBox.innerHTML = `<h3>Рикролл!</h3><iframe width='420' height='236' src='https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe><div style='margin-top:8px'><button class='btn' id='closeRick'>Закрыть</button></div>`; document.getElementById('closeRick').onclick = ()=>{ sRick.currentTime=0; sRick.play(); modalClose(); grantAchievement('rickrolled'); } } };
+    window.addEventListener('keydown', e=>{ buffer.push(e.key.toLowerCase()); if(buffer.length>50) buffer.shift(); const joined = buffer.join(''); for(const code in secrets){ if(joined.includes(code)){ secrets[code](); buffer.length=0; } } });
 
-    window.addEventListener('keydown', (e)=>{
-      buffer.push(e.key.toLowerCase()); if(buffer.length>20) buffer.shift(); const joined = buffer.join(''); for(const code in secrets){ if(joined.includes(code)){ secrets[code](); buffer.length=0; break } }
-    });
+    // vibration helper
+    function vib(ms=40){ if(navigator.vibrate && localStorage.getItem('sosal_vib')==='true') navigator.vibrate(ms); }
 
-    /* ===== screen shake ===== */
-    function shakeScreen(){ const el=document.getElementById('gameCard'); el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),400); }
+    // screen shake
+    function shake(){ const el = document.getElementById('gameCard'); el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),400); }
 
-    /* ===== board load initially ===== */
-    loadBoard();
+    // periodic chaos
+    setInterval(()=>{ if(!running||paused) return; if(Math.random()<0.25) spawnEmoji(); if(Math.random()<0.12) spawnFake(); if(Math.random()<0.05) spawnBoss(); if(Math.random()<0.06 && document.getElementById('themeSel').value==='matrix') startMatrix(); if(Math.random()<0.02) burst(Math.random()*innerWidth, Math.random()*innerHeight); },1000);
 
-    /* ===== helper: random periodic chaos ===== */
-    setInterval(()=>{ if(!running || paused) return; if(Math.random()<0.25) spawnEmoji(); if(Math.random()<0.12) spawnFakeButton(); if(Math.random()<0.05) spawnBoss(); if(Math.random()<0.08 && document.body.dataset.theme==='matrix') startMatrix(); if(Math.random()<0.02) burst(Math.random()*innerWidth, Math.random()*innerHeight); },1200);
+    // UI bindings
+    document.getElementById('startBtn').addEventListener('click', ()=>{ startGame(); });
+    document.getElementById('roundTime').addEventListener('input', e=>{ roundTimeLabel.textContent = e.target.value; localStorage.setItem('sosal_time', e.target.value); }); if(localStorage.getItem('sosal_time')){ roundTimeInput.value = localStorage.getItem('sosal_time'); roundTimeLabel.textContent = roundTimeInput.value; timeLeft = Number(roundTimeInput.value); timeLeftEl.textContent=timeLeft }
+    document.getElementById('themeSel').value = localStorage.getItem('sosal_theme')||'neon'; document.getElementById('themeSel').addEventListener('change', e=>{ localStorage.setItem('sosal_theme', e.target.value); applyTheme(e.target.value); }); applyTheme(document.getElementById('themeSel').value);
 
-    // save mode
-    const modeSaved = localStorage.getItem('sosal_mode') || 'normal';
-    // create mode select (if not exists) and sync
-    let modeSel = document.getElementById('mode'); if(!modeSel){ modeSel = document.createElement('select'); modeSel.id='mode'; modeSel.innerHTML='<option value="easy">Лёгкий</option><option value="normal">Норм</option><option value="hell">Адский</option>'; document.querySelector('.controls').appendChild(modeSel); }
-    modeSel.value = localStorage.getItem('sosal_mode')||'normal'; modeSel.addEventListener('change',()=>{ localStorage.setItem('sosal_mode',modeSel.value); });
+    function applyTheme(t){ if(t==='matrix'){ startMatrix(); document.body.style.background='linear-gradient(120deg,#021,#032)'; } else { stopMatrix(); if(t==='fire') document.body.style.background='linear-gradient(120deg,#2b0000,#4b0710)'; else if(t==='ice') document.body.style.background='linear-gradient(120deg,#021428,#0b2a44)'; else document.body.style.background='linear-gradient(120deg,var(--bg1),var(--bg2))'; } }
 
-    // Save round time
-    roundTimeInput.addEventListener('change',()=>localStorage.setItem('sosal_time',roundTimeInput.value)); if(localStorage.getItem('sosal_time')){ roundTimeInput.value = localStorage.getItem('sosal_time'); timeLeft = Number(roundTimeInput.value); timeLeftEl.textContent=timeLeft }
+    // start little tutorial auto (first time)
+    if(!localStorage.getItem('sosal_seen')){ modalOpen(); modalBox.innerHTML = `<h3>Добро пожаловать</h3><p>Это максимальная версия СОСАЛ? — попробуй старт, кликай «Да» и лови «Нет».</p><div style='margin-top:8px'><button class='btn' id='gotIt'>Понятно</button></div>`; document.getElementById('gotIt').onclick = ()=>{ modalClose(); localStorage.setItem('sosal_seen','1'); }; }
 
-    // when window unfocused pause
-    window.addEventListener('blur',()=>{ if(running && !paused) { paused=true; pauseBtn.textContent='Возобновить'; } });
+    // achievements persistence
+    function grantAchievement(id){ const a = achievements.find(x=>x.id===id); if(a && !a.done){ a.done=true; renderAchievements(); showAch(a.name); localStorage.setItem('sosal_ach', JSON.stringify(achievements)); } }
+    function renderAchievements(){ achList.innerHTML=''; achievements.forEach(a=>{ const li=document.createElement('li'); li.textContent = `${a.name} ${a.done? '✅':''} — ${a.desc}`; achList.appendChild(li); }); }
 
-    // expose finish for debug
+    // finish game via global
     window.finishGame = finishGame;
 
-    // start automatically
-    // startGame();
+    // expose some debug keys: H shows highscore, L shows leaderboard
+    window.addEventListener('keydown', e=>{ if(e.key==='F2'){ alert('high='+high); } if(e.key==='F3'){ alert(localStorage.getItem('sosal_board')); } });
+
+    // load saved board
+    loadBoard();
+
+    // auto save theme/mode
+    if(localStorage.getItem('sosal_mode')) document.getElementById('modeSel').value = localStorage.getItem('sosal_mode'); document.getElementById('modeSel').addEventListener('change', e=>localStorage.setItem('sosal_mode', e.target.value));
+
+    // vibration default
+    if(localStorage.getItem('sosal_vib')===null) localStorage.setItem('sosal_vib', 'false');
 
   </script>
 </body>
