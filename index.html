@@ -1,97 +1,195 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>INFANTILES</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>СОСАЛ?</title>
+  <meta name="description" content="Мем-страничка: СОСАЛ? Да / Нет" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' x='0.1em' font-size='90'>🤨</text></svg>">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #0b0b1c;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      min-width: 1024px;
+    :root{
+      --bg1:#0f1020; --bg2:#1f1147; --bg3:#2b1163; --accent:#8b5cf6; --accent2:#22d3ee; --ok:#10b981; --bad:#ef4444; --text:#e5e7eb;
     }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
+      color:var(--text);
+      background: radial-gradient(60% 80% at 70% 20%, rgba(34,211,238,.15), transparent 60%),
+                  radial-gradient(60% 80% at 30% 80%, rgba(139,92,246,.15), transparent 60%),
+                  linear-gradient(135deg,var(--bg1),var(--bg2) 45%,var(--bg3));
+      display:grid; place-items:center;
+      overflow:hidden;
     }
-    h1 {
-      font-size: 36px;
-      text-align: center;
+    .card{
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: clamp(18px, 3.5vw, 36px);
+      width:min(680px, 92vw);
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
     }
-    /* Удалены медиа-запросы и flex-wrap */
-    .block {
-      background: #1e1e2f;
-      border: 2px solid hotpink;
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px hotpink;
+    h1{
+      margin:0 0 .25em; font-size: clamp(42px, 8vw, 84px); line-height:1; letter-spacing:.04em;
+      background: linear-gradient(90deg, #fff, #c7d2fe, #a5f3fc);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow: 0 2px 0 rgba(0,0,0,.15);
     }
-    input, button {
-      font-size: 16px;
+    .subtitle{opacity:.8; margin-bottom:1.25em}
+
+    .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap}
+    .btn{
+      --bg:rgba(255,255,255,.08); --bd:rgba(255,255,255,.25); --glow:rgba(139,92,246,.35);
+      appearance:none; border:1px solid var(--bd); background:var(--bg); color:var(--text);
+      padding: 14px 22px; font-size: clamp(16px, 2.5vw, 20px); border-radius: 999px; cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+      box-shadow: 0 6px 16px rgba(0,0,0,.25), 0 0 0 0 var(--glow);
+      user-select:none;
     }
-    .neon {
-      text-shadow: 0 0 10px hotpink, 0 0 20px hotpink;
-      color: white;
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.3), 0 0 0 6px var(--glow); }
+    .btn:active{ transform: translateY(1px) scale(.98); }
+
+    .btn.yes{ --bg: rgba(16,185,129,.15); --bd: rgba(16,185,129,.5); --glow: rgba(16,185,129,.25); }
+    .btn.no{  --bg: rgba(239,68,68,.12); --bd: rgba(239,68,68,.45); --glow: rgba(239,68,68,.2); position:relative; }
+    .btn.retry{ display:none; --bg: rgba(139,92,246,.16); --bd: rgba(139,92,246,.5); --glow: rgba(139,92,246,.25); }
+
+    .hint{ margin-top:1rem; font-size: .95rem; opacity:.7 }
+
+    .tag{
+      position:absolute; top:12px; right:12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); padding:.35em .6em; border-radius:8px;
     }
+
+    /* confetti canvas */
+    canvas#fx{ position:fixed; inset:0; pointer-events:none; }
+
+    /* flee area to keep No button inside card */
+    .card-inner{ position:relative }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="neon">INFANTILES — Squad Site 🚀</h1>
-    <div class="block">
-      <h2>Авторизация</h2>
-      <input id="username" placeholder="Введи ник" />
-      <button onclick="login()">Войти</button>
+  <canvas id="fx"></canvas>
+
+  <main class="card" role="main" aria-live="polite">
+    <div class="tag">мем</div>
+    <div class="card-inner">
+      <h1 id="title">СОСАЛ?</h1>
+      <p class="subtitle" id="subtitle">Ответь честно. Мы никому не скажем 🤫</p>
+
+      <div class="actions">
+        <button class="btn yes" id="yes">Да</button>
+        <button class="btn no" id="no">Нет</button>
+        <button class="btn retry" id="retry">Ещё раз</button>
+      </div>
+
+      <p class="hint">Подвигай «Нет» — он трусит и убегает.</p>
     </div>
-    <div class="block">
-      <div><b>Твоя роль:</b> <span id="role">-</span></div>
-      <button onclick="randomRole()">Случайная роль</button>
-    </div>
-    <div class="block">
-      <h2>📢 Объявление от INFANTILES</h2>
-      <p>Сегодня общий сбор в 22:00. Готовьте кринж.</p>
-    </div>
-    <div class="block">
-      <h2>🧑‍💻 Профиль</h2>
-      <div><b>Ник:</b> <span id="nick">-</span></div>
-      <div><b>Уровень:</b> 1 / Опыт: <span id="xp">0</span></div>
-    </div>
-    <div class="block">
-      <h2>🏆 Ачивки</h2>
-      <ul id="achievements">
-        <li>Зашёл на сайт</li>
-      </ul>
-    </div>
-  </div>
+  </main>
 
   <script>
-    const nickEl = document.getElementById('nick');
-    const roleEl = document.getElementById('role');
-    const xpEl = document.getElementById('xp');
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const retryBtn = document.getElementById('retry');
 
-    function login() {
-      const username = document.getElementById('username').value;
-      nickEl.textContent = username;
-      localStorage.setItem('nickname', username);
+    // Confetti FX (tiny, dependency-free)
+    const cv = document.getElementById('fx');
+    const ctx = cv.getContext('2d');
+    let confetti = [], running = false;
+    function resize(){ cv.width = innerWidth; cv.height = innerHeight }
+    addEventListener('resize', resize); resize();
+
+    function burst(x, y){
+      for(let i=0;i<140;i++){
+        confetti.push({
+          x, y,
+          vx:(Math.random()*2-1)*6,
+          vy:(Math.random()*2-1)*6 - 4,
+          g: 0.18 + Math.random()*0.12,
+          s: 3 + Math.random()*3,
+          r: Math.random()*Math.PI,
+          vr:(Math.random()*2-1)*0.2,
+          shape: (Math.random()<0.5?'rect':'circle'),
+          life: 90 + Math.random()*40
+        });
+      }
+      if(!running){ running = true; loop(); }
     }
 
-    function randomRole() {
-      const roles = ['Создатель', 'Мемолог', 'Кринжеватель', 'Шутник', 'Котик', 'Инфантил', 'Аноним'];
-      const role = roles[Math.floor(Math.random() * roles.length)];
-      roleEl.textContent = role;
-      localStorage.setItem('role', role);
+    function loop(){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      confetti = confetti.filter(p=> p.life>0);
+      for(const p of confetti){
+        p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life--;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        // auto color cycling via globalCompositeOperation
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = `hsl(${(p.y+p.x)%360}, 90%, 60%)`;
+        if(p.shape==='rect') ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
+        else { ctx.beginPath(); ctx.arc(0,0,p.s/2,0,Math.PI*2); ctx.fill(); }
+        ctx.restore();
+      }
+      if(confetti.length){ requestAnimationFrame(loop); }
+      else { running = false; }
     }
 
-    window.onload = () => {
-      const storedNick = localStorage.getItem('nickname');
-      const storedRole = localStorage.getItem('role');
-      if (storedNick) nickEl.textContent = storedNick;
-      if (storedRole) roleEl.textContent = storedRole;
+    // Move the NO button away from cursor
+    noBtn.addEventListener('pointerenter', () => { flee(140); });
+    noBtn.addEventListener('pointermove', () => { flee(200); });
+
+    function flee(distance){
+      const wrap = document.querySelector('.card');
+      const rect = wrap.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+      // pick a random spot within the card bounds
+      const pad = 12;
+      let x = Math.random()*(rect.width - b.width - pad*2) + pad;
+      let y = Math.random()*(rect.height - b.height - pad*2) + pad;
+      // Prevent overlap with YES button
+      const yRect = yesBtn.getBoundingClientRect();
+      if(Math.abs(x - (yRect.left-rect.left)) < 120 && Math.abs(y - (yRect.top-rect.top)) < 60){
+        x = rect.width - b.width - pad - 10; y = pad + 10;
+      }
+      noBtn.style.position='absolute';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
     }
+
+    // YES click => congrats
+    yesBtn.addEventListener('click', (e)=>{
+      title.textContent = 'УВАЖАЮ 👍';
+      subtitle.textContent = 'Честность — сила. Держи конфетти!';
+      retryBtn.style.display = 'inline-flex';
+      burst(e.clientX, e.clientY);
+    });
+
+    // NO click => playful nudge
+    noBtn.addEventListener('click', ()=>{
+      subtitle.textContent = 'Не успел нажать? Попробуй ещё 😏';
+      flee();
+    });
+
+    // Retry resets state
+    retryBtn.addEventListener('click', ()=>{
+      title.textContent = 'СОСАЛ?';
+      subtitle.textContent = 'Ответь честно. Мы никому не скажем 🤫';
+      retryBtn.style.display = 'none';
+      noBtn.style.position='relative';
+      noBtn.style.left = 'auto';
+      noBtn.style.top  = 'auto';
+    });
+
+    // Keyboard support
+    window.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='y'){ yesBtn.click(); }
+      if(e.key.toLowerCase()==='n'){ flee(); }
+      if(e.key==='Enter'){ yesBtn.click(); }
+    });
   </script>
 </body>
 </html>
