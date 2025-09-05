@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>СОСАЛ?</title>
   <meta name="description" content="Мем-страничка: СОСАЛ? Да / Нет" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' x='0.1em' font-size='90'>🤨</text></svg>">
   <style>
     :root{
       --bg1:#0f1020; --bg2:#1f1147; --bg3:#2b1163; --accent:#8b5cf6; --accent2:#22d3ee; --ok:#10b981; --bad:#ef4444; --text:#e5e7eb;
@@ -27,7 +26,7 @@
       backdrop-filter: blur(8px);
       border-radius: 24px;
       padding: clamp(18px, 3.5vw, 36px);
-      width:min(680px, 92vw);
+      width:min(720px, 94vw);
       box-shadow: 0 10px 40px rgba(0,0,0,.35);
       text-align:center;
       position:relative;
@@ -51,7 +50,7 @@
     }
     .subtitle{opacity:.8; margin-bottom:1.25em; transition:.3s ease;}
 
-    .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap}
+    .actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; position:relative}
     .btn{
       --bg:rgba(255,255,255,.08); --bd:rgba(255,255,255,.25); --glow:rgba(139,92,246,.35);
       appearance:none; border:1px solid var(--bd); background:var(--bg); color:var(--text);
@@ -69,12 +68,12 @@
 
     .hint{ margin-top:1rem; font-size: .95rem; opacity:.7; }
 
-    .tag{
-      position:absolute; top:12px; right:12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
-      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); padding:.35em .6em; border-radius:8px;
-    }
+    .tag{ position:absolute; top:12px; right:12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+      background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); padding:.35em .6em; border-radius:8px; }
 
     canvas#fx{ position:fixed; inset:0; pointer-events:none; }
+    .counter{ margin-top:1em; font-size:1.1rem; opacity:.85; }
+    .easteregg{ display:none; margin-top:1em; font-size:1rem; color:#fcd34d; }
   </style>
 </head>
 <body>
@@ -93,6 +92,8 @@
       </div>
 
       <p class="hint">Кликни «Нет» если сможешь 😏</p>
+      <p class="counter">Промахов: <span id="missCount">0</span></p>
+      <p class="easteregg" id="egg">🐱 Пасхалка: Ты слишком старался!</p>
     </div>
   </main>
 
@@ -105,8 +106,12 @@
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
     const retryBtn = document.getElementById('retry');
+    const missCountEl = document.getElementById('missCount');
+    const egg = document.getElementById('egg');
     const yay = document.getElementById('yay');
     const nope = document.getElementById('nope');
+
+    let misses = 0;
 
     const cv = document.getElementById('fx');
     const ctx = cv.getContext('2d');
@@ -147,10 +152,26 @@
       else { running = false; }
     }
 
-    noBtn.addEventListener('pointerenter', () => { flee(140); });
-    noBtn.addEventListener('pointermove', () => { flee(200); });
+    noBtn.addEventListener('pointerenter', () => { flee(); });
+    noBtn.addEventListener('pointermove', () => { flee(); });
 
     function flee(){
+      misses++;
+      missCountEl.textContent = misses;
+      if(misses >= 5){
+        egg.style.display = 'block';
+      }
+      if(misses % 3 === 0){
+        // прикол: вместо кнопки "Нет" появляется ещё одна "Да"
+        noBtn.textContent = 'Да';
+        noBtn.classList.remove('no');
+        noBtn.classList.add('yes');
+        noBtn.onclick = () => yesBtn.click();
+      } else {
+        noBtn.textContent = 'Нет';
+        noBtn.classList.add('no');
+        noBtn.onclick = null;
+      }
       const wrap = document.querySelector('.card');
       const rect = wrap.getBoundingClientRect();
       const b = noBtn.getBoundingClientRect();
@@ -171,11 +192,6 @@
       yay.currentTime=0; yay.play();
     });
 
-    noBtn.addEventListener('click', ()=>{
-      subtitle.textContent = 'Не успел? Ха-ха 😂';
-      flee();
-    });
-
     retryBtn.addEventListener('click', ()=>{
       title.textContent = 'СОСАЛ?';
       subtitle.textContent = 'Ответь честно. Мы никому не скажем 🤫';
@@ -183,6 +199,12 @@
       noBtn.style.position='relative';
       noBtn.style.left = 'auto';
       noBtn.style.top  = 'auto';
+      noBtn.textContent = 'Нет';
+      noBtn.classList.add('no');
+      noBtn.onclick = null;
+      misses = 0;
+      missCountEl.textContent = 0;
+      egg.style.display = 'none';
     });
 
     window.addEventListener('keydown', (e)=>{
