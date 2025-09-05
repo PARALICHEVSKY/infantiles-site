@@ -3,58 +3,51 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>СОСАЛ? — Мини-игра</title>
+  <title>СОСАЛ? — Мем-игра</title>
   <style>
     :root{
       --bg1:#0f1020; --bg2:#1f1147; --bg3:#2b1163; --text:#e5e7eb;
     }
     *{box-sizing:border-box;}
-    html,body{height:100%; margin:0; overflow:hidden;}
+    html,body{height:100%;margin:0;overflow:hidden;}
     body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
       color:var(--text);
       background:linear-gradient(135deg,var(--bg1),var(--bg2) 45%,var(--bg3));
       display:flex;align-items:center;justify-content:center;
     }
     .card{
-      background: rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.06);
       border:1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(8px);
-      border-radius: 24px;
-      padding: 24px;
-      width:min(800px,95vw);
+      backdrop-filter:blur(8px);
+      border-radius:24px;
+      padding:24px;
+      width:min(850px,95vw);
       text-align:center;
       position:relative;
       overflow:hidden;
       z-index:5;
     }
     h1{
-      margin:0 0 .5em; font-size: clamp(42px, 8vw, 84px);
-      background: linear-gradient(90deg,#fff,#a5f3fc,#c7d2fe);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      position:relative;
-      animation: floatText 10s infinite linear;
+      margin:0 0 .5em;font-size:clamp(42px,8vw,84px);
+      background:linear-gradient(90deg,#fff,#a5f3fc,#c7d2fe);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      animation:floatText 10s infinite linear;
     }
-    @keyframes floatText {
-      0%{transform:translateX(0) translateY(0) rotate(0deg);}
-      25%{transform:translateX(20px) translateY(-20px) rotate(5deg);}
-      50%{transform:translateX(-20px) translateY(20px) rotate(-5deg);}
-      75%{transform:translateX(15px) translateY(10px) rotate(8deg);}
-      100%{transform:translateX(0) translateY(0) rotate(0deg);}
+    @keyframes floatText{
+      0%{transform:translate(0,0) rotate(0deg);}25%{transform:translate(20px,-20px) rotate(6deg);}50%{transform:translate(-20px,20px) rotate(-6deg);}75%{transform:translate(15px,10px) rotate(10deg);}100%{transform:translate(0,0) rotate(0deg);}
     }
     .actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-    .btn{
-      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);
-      color:var(--text);padding:14px 22px;font-size:18px;border-radius:999px;
-      cursor:pointer;transition:.2s;user-select:none;
-    }
-    .btn:hover{transform:scale(1.1);} 
-    .btn:active{transform:scale(.95);}
+    .btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:var(--text);padding:14px 22px;font-size:18px;border-radius:999px;cursor:pointer;transition:.2s;user-select:none;}
+    .btn:hover{transform:scale(1.1);} .btn:active{transform:scale(.95);}
     .btn.yes{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.6);} 
-    .btn.no{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.6);}
-    .btn.retry{display:none;background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.6);}
+    .btn.no{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.6);} 
+    .btn.retry{display:none;background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.6);} 
     .scoreboard{margin-top:1em;font-size:1.1rem;}
+    .difficulty{margin-top:1em;}
     canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:1;}
+    .emojiRain{position:fixed;top:-50px;font-size:32px;pointer-events:none;z-index:0;animation:fall linear forwards;}
+    @keyframes fall{to{transform:translateY(110vh);} }
   </style>
 </head>
 <body>
@@ -67,7 +60,15 @@
       <button class="btn no" id="no">Нет</button>
       <button class="btn retry" id="retry">Ещё раз</button>
     </div>
-    <div class="scoreboard">Очки: <span id="score">0</span> | Рекорд: <span id="highscore">0</span></div>
+    <div class="scoreboard">Очки: <span id="score">0</span> | Рекорд: <span id="highscore">0</span> | Время: <span id="time">30</span>с</div>
+    <div class="difficulty">
+      Сложность:
+      <select id="mode">
+        <option value="easy">Лёгкий</option>
+        <option value="normal" selected>Норм</option>
+        <option value="hell">Адский 🔥</option>
+      </select>
+    </div>
   </main>
 
   <audio id="yay" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
@@ -81,10 +82,13 @@
     const retryBtn=document.getElementById('retry');
     const scoreEl=document.getElementById('score');
     const highscoreEl=document.getElementById('highscore');
+    const timeEl=document.getElementById('time');
+    const modeSel=document.getElementById('mode');
     const yay=document.getElementById('yay');
     const nope=document.getElementById('nope');
 
     let score=0,highscore=localStorage.getItem('highscoreSOSAL')||0;
+    let time=30,timer;
     highscoreEl.textContent=highscore;
 
     const cv=document.getElementById('fx');
@@ -92,77 +96,31 @@
     let confetti=[],running=false;
     function resize(){cv.width=innerWidth;cv.height=innerHeight;}resize();window.addEventListener('resize',resize);
 
-    function burst(x,y){
-      for(let i=0;i<100;i++){
-        confetti.push({x,y,vx:(Math.random()*2-1)*6,vy:(Math.random()*2-1)*6-4,g:0.18+Math.random()*0.12,s:3+Math.random()*3,r:Math.random()*Math.PI,vr:(Math.random()*2-1)*0.2,life:80+Math.random()*40});
-      }
-      if(!running){running=true;loop();}
-    }
-    function loop(){
-      ctx.clearRect(0,0,cv.width,cv.height);
-      confetti=confetti.filter(p=>p.life>0);
-      for(const p of confetti){
-        p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life--;
-        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);
-        ctx.fillStyle=`hsl(${(p.x+p.y)%360},90%,60%)`;
-        ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
-        ctx.restore();
-      }
-      if(confetti.length)requestAnimationFrame(loop);else running=false;
-    }
+    function burst(x,y){for(let i=0;i<100;i++){confetti.push({x,y,vx:(Math.random()*2-1)*6,vy:(Math.random()*2-1)*6-4,g:0.18+Math.random()*0.12,s:3+Math.random()*3,r:Math.random()*Math.PI,vr:(Math.random()*2-1)*0.2,life:80+Math.random()*40});}if(!running){running=true;loop();}}
+    function loop(){ctx.clearRect(0,0,cv.width,cv.height);confetti=confetti.filter(p=>p.life>0);for(const p of confetti){p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.life--;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=`hsl(${(p.x+p.y)%360},90%,60%)`;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);ctx.restore();}if(confetti.length)requestAnimationFrame(loop);else running=false;}
 
-    function updateScore(points){
-      score+=points;scoreEl.textContent=score;
-      if(score>highscore){highscore=score;localStorage.setItem('highscoreSOSAL',highscore);highscoreEl.textContent=highscore;}
-    }
+    function updateScore(points){score+=points;scoreEl.textContent=score;if(score>highscore){highscore=score;localStorage.setItem('highscoreSOSAL',highscore);highscoreEl.textContent=highscore;}}
 
-    function flee(){
-      updateScore(1);
-      const wrap=document.querySelector('.card');
-      const rect=wrap.getBoundingClientRect();
-      const b=noBtn.getBoundingClientRect();
-      let x=Math.random()*(rect.width-b.width-24)+12;
-      let y=Math.random()*(rect.height-b.height-24)+12;
-      noBtn.style.position='absolute';
-      noBtn.style.left=x+'px';noBtn.style.top=y+'px';
-      nope.currentTime=0;nope.play();
+    function gameOver(){clearInterval(timer);subtitle.textContent=`Игра окончена! Итог: ${score}`;retryBtn.style.display='inline-block';noBtn.style.display='none';}
 
-      // рандомные приколы
-      if(Math.random()<0.2){noBtn.textContent='Да 😈';noBtn.onclick=()=>yesBtn.click();}
-      else{noBtn.textContent='Нет';noBtn.onclick=null;}
-      if(Math.random()<0.1){subtitle.textContent='😳 Ого, кнопка ускользнула!';}
-    }
+    function startTimer(){time=30;timeEl.textContent=time;timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){gameOver();}},1000);}
 
-    yesBtn.addEventListener('click',e=>{
-      title.textContent='УВАЖАЮ 👍';
-      subtitle.textContent='Честность — сила. Конфетти!';
-      retryBtn.style.display='inline-block';
-      burst(e.clientX,e.clientY);
-      yay.currentTime=0;yay.play();
-      updateScore(10);
-    });
+    function flee(){if(time<=0)return;updateScore(1);const wrap=document.querySelector('.card');const rect=wrap.getBoundingClientRect();const b=noBtn.getBoundingClientRect();let speed=modeSel.value==='easy'?40:(modeSel.value==='normal'?80:160);let x=Math.random()*(rect.width-b.width-24)+12;let y=Math.random()*(rect.height-b.height-24)+12;noBtn.style.position='absolute';noBtn.style.left=x+'px';noBtn.style.top=y+'px';nope.currentTime=0;nope.play();if(Math.random()<0.2&&modeSel.value!=='easy'){noBtn.textContent='Да 😈';noBtn.onclick=()=>yesBtn.click();}else{noBtn.textContent='Нет';noBtn.onclick=null;}if(modeSel.value==='hell'&&Math.random()<0.2){document.body.style.transform='rotate('+(Math.random()*10-5)+'deg)';setTimeout(()=>document.body.style.transform='none',200);}if(Math.random()<0.05){spawnFake();}if(Math.random()<0.1){spawnEmoji();}}
 
+    function spawnFake(){const fake=document.createElement('button');fake.className='btn';fake.textContent=Math.random()<0.5?'Да':'Нет';fake.style.position='absolute';fake.style.left=Math.random()*80+'%';fake.style.top=Math.random()*60+'%';fake.onclick=()=>{fake.remove();subtitle.textContent='Фейк! 😂';};document.querySelector('.card').appendChild(fake);setTimeout(()=>fake.remove(),3000);}
+
+    function spawnEmoji(){const e=document.createElement('div');e.className='emojiRain';e.textContent=['😂','🔥','😈','🍆','👽','💀'][Math.floor(Math.random()*6)];e.style.left=Math.random()*100+'vw';e.style.animationDuration=(3+Math.random()*3)+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),6000);}
+
+    yesBtn.addEventListener('click',e=>{if(time<=0)return;title.textContent='УВАЖАЮ 👍';subtitle.textContent='Честность — сила. Конфетти!';burst(e.clientX,e.clientY);yay.currentTime=0;yay.play();updateScore(10);});
     noBtn.addEventListener('pointerenter',flee);
     noBtn.addEventListener('pointermove',flee);
+    retryBtn.addEventListener('click',()=>{score=0;scoreEl.textContent=0;title.textContent='СОСАЛ?';subtitle.textContent='Попробуй нажать «Нет» или признайся честно 😏';retryBtn.style.display='none';noBtn.style.display='inline-block';noBtn.style.position='relative';noBtn.style.left='auto';noBtn.style.top='auto';noBtn.textContent='Нет';noBtn.onclick=null;startTimer();});
 
-    retryBtn.addEventListener('click',()=>{
-      score=0;scoreEl.textContent=0;
-      title.textContent='СОСАЛ?';subtitle.textContent='Попробуй нажать «Нет» или признайся честно 😏';
-      retryBtn.style.display='none';
-      noBtn.style.position='relative';noBtn.style.left='auto';noBtn.style.top='auto';
-      noBtn.textContent='Нет';noBtn.onclick=null;
-    });
-
-    // Чит-код: ↑↑↓↓←→←→BA
+    // чит-код ↑↑↓↓←→←→BA
     let seq=[];const cheat=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-    window.addEventListener('keydown',e=>{
-      seq.push(e.key);if(seq.length>cheat.length)seq.shift();
-      if(JSON.stringify(seq).toLowerCase()===JSON.stringify(cheat)){
-        subtitle.textContent='Чит-режим активирован! 🔥';
-        yesBtn.textContent='МЕГА ДА';noBtn.style.display='none';
-        burst(innerWidth/2,innerHeight/2);
-      }
-    });
+    window.addEventListener('keydown',e=>{seq.push(e.key);if(seq.length>cheat.length)seq.shift();if(JSON.stringify(seq).toLowerCase()===JSON.stringify(cheat)){subtitle.textContent='Чит-режим! Всё в Да!';yesBtn.textContent='МЕГА ДА';noBtn.style.display='none';burst(innerWidth/2,innerHeight/2);}});
+
+    startTimer();
   </script>
 </body>
 </html>
