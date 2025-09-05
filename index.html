@@ -1,119 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>СОСАЛ? — MAX MEME ARCADE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СОСАЛ? MEME GAME</title>
 <style>
-:root{--bg1:#031029;--bg2:#0b1630;--accent:#7c5cff;--good:#10b981;--bad:#ef4444;--text:#e9f2ff}
-*{box-sizing:border-box}html,body{margin:0;padding:0;height:100%;background:linear-gradient(120deg,var(--bg1),var(--bg2));color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}body{overflow:hidden}
-.wrap{display:flex;align-items:center;justify-content:center;height:100vh;padding:20px}
-.card{width:min(1200px,98vw);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(6px);border-radius:16px;padding:16px;position:relative}
-header{display:flex;align-items:center;justify-content:space-between}
-h1{margin:0;font-size:clamp(20px,3vw,36px);background:linear-gradient(90deg,#fff,#c7d2fe);-webkit-background-clip:text;background-clip:text;color:transparent}
-.controls{display:flex;gap:10px;align-items:center}
-.btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--text);cursor:pointer}
-.btn.primary{background:linear-gradient(90deg,#7c5cff55,#22d3ee33);border-color:rgba(124,92,255,0.4)}
-.main{display:flex;gap:16px;margin-top:12px}
-.play{flex:1;min-height:480px;position:relative;overflow:hidden;border-radius:12px;padding:12px;border:1px dashed rgba(255,255,255,0.03)}
-.sidebar{width:300px;padding:10px;border-radius:10px;background:rgba(0,0,0,0.12)}
-.hud{display:flex;gap:10px;flex-wrap:wrap}
-.score{font-weight:800;font-size:20px}
-#noBtn{position:absolute;padding:10px 18px;border-radius:999px}
-.floating-letter{position:absolute;font-weight:900;opacity:.12;pointer-events:none;mix-blend-mode:screen}
-.emoji{position:fixed;top:-60px;font-size:32px;pointer-events:none}
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:999}
-.modal .box{background:linear-gradient(180deg,#081226,#0b1730);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);max-width:90vw}
-.achieve{position:fixed;right:20px;bottom:20px;background:rgba(0,0,0,0.6);padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06)}
-.small{font-size:13px;opacity:.9}
-.matrix{position:absolute;inset:0;z-index:1;pointer-events:none}
-.hidden{display:none}
-.progress{height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden}
-.progress > i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#22d3ee);width:0%}
-.top-actions{display:flex;gap:8px}
-@media(max-width:900px){.main{flex-direction:column}.sidebar{width:100%}}
+  body {
+    margin:0; padding:0;
+    height:100vh; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(120deg,#031029,#0b1630);
+    font-family:sans-serif; color:white; overflow:hidden;
+  }
+  #game {
+    width:90vw; max-width:600px; height:500px;
+    background:rgba(0,0,0,0.3); border-radius:16px; position:relative;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  #score { font-size:20px; margin-bottom:10px; }
+  button {
+    padding:10px 20px; font-size:16px; border:none; border-radius:12px;
+    cursor:pointer; margin:5px; background:linear-gradient(90deg,#7c5cff,#22d3ee);
+    color:white;
+    position:absolute;
+  }
+  .letter {
+    position:absolute; font-weight:bold; opacity:0.3;
+    pointer-events:none;
+    color:#7c5cff;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card" id="gameCard">
-<header>
-<h1>СОСАЛ? — MAX MEME ARCADE</h1>
-<div class="controls">
-<div class="top-actions">
-<button class="btn" id="helpBtn">Как играть</button>
-<button class="btn" id="exportBtn">Экспорт</button>
-<button class="btn" id="importBtn">Импорт</button>
-<button class="btn" id="settingsBtn">Настройки</button>
-<button class="btn primary" id="startBtn">Старт</button>
+<div id="game">
+  <div id="score">Очки: 0</div>
+  <button id="yesBtn">Да</button>
+  <button id="noBtn">Нет</button>
 </div>
-</div>
-</header>
-<div class="main">
-<section class="play" id="playarea" aria-label="Игровая зона">
-<div class="hud" style="position:relative;z-index:30;margin-bottom:8px">
-<div>Очки: <span class="score" id="score">0</span></div>
-<div>Рекорд: <span id="highscore">0</span></div>
-<div>Комбо: <span id="combo">x1</span></div>
-<div>Раунд: <span id="roundNum">1</span></div>
-<div>Время: <span id="timeLeft">30</span>s</div>
-</div>
-<div id="lettersLayer"></div>
-<button class="btn" id="noBtn">Нет</button>
-<button class="btn" id="yesBtn" style="position:relative;left:auto;top:auto">Да</button>
-<canvas id="matrix" class="matrix"></canvas>
-</section>
-<aside class="sidebar">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div>
-<div class="small">Тема</div>
-<select id="themeSel" class="small">
-<option value="neon">Неон</option>
-<option value="matrix">Матрица</option>
-<option value="fire">Огонь</option>
-<option value="ice">Лёд</option>
-</select>
-</div>
-<div>
-<div class="small">Сложность</div>
-<select id="modeSel" class="small">
-<option value="easy">Лёгкий</option>
-<option value="normal" selected>Норм</option>
-<option value="hell">Адский</option>
-</select>
-</div>
-</div>
-<div style="margin-top:12px">
-<div class="small">Время раунда: <span id="roundTimeLabel">30</span>s</div>
-<input id="roundTime" type="range" min="10" max="90" value="30">
-<div class="progress" style="margin-top:8px"><i id="progressBar"></i></div>
-</div>
-<div style="margin-top:12px">
-<h3 style="margin:0 0 8px 0">Топ‑5 рекордов</h3>
-<ol id="board"></ol>
-<div style="margin-top:8px;display:flex;gap:6px"><button class="btn" id="clearBtn">Очистить</button><button class="btn" id="copyBtn">Копировать</button></div>
-</div>
-<div style="margin-top:12px">
-<h4 style="margin:0 0 8px 0">Ачивки</h4>
-<ul id="achList" class="small"></ul>
-</div>
-<div style="margin-top:12px">
-<h4 style="margin:0 0 8px 0">Магазин скинов</h4>
-<ul id="skinList" class="small"></ul>
-</div>
-</aside>
-</div>
-</div>
-</div>
-<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
-<div class="achieve hidden" id="achPopup"></div>
-<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none"></canvas>
+
 <script>
-// Игра полностью с аркадными функциями, бонусами, боссами, мульти-раундами, ачивками, магазином, летящими буквами и мемами.
-// Здесь интегрированы все предыдущие скрипты: движок, эффекты, рекорды, конфетти, Matrix, эмодзи, секретные коды, комбо, боссы, таймеры, темы, магазин, автосохранение, экспорт/импорт, запись момента, vibration и screen shake.
-// Полная версия будет занимать более 1000+ строк JS.
-// Код реализует все описанные ранее фичи и полностью готов к запуску в браузере.
-// Для максимальной игры: запустить и взаимодействовать с кнопками «Да», ловить «Нет», активировать секретные коды и наслаждаться хаосом.
+const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const scoreDisplay = document.getElementById('score');
+const game = document.getElementById('game');
+
+let score = 0;
+
+// Двигаем кнопку "Нет" случайно
+function moveNoBtn() {
+  const x = Math.random() * (game.clientWidth - noBtn.clientWidth);
+  const y = Math.random() * (game.clientHeight - noBtn.clientHeight);
+  noBtn.style.left = x + 'px';
+  noBtn.style.top = y + 'px';
+}
+
+// Добавляем эффект летящих букв
+function createLetter() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const letter = document.createElement('div');
+  letter.className = 'letter';
+  letter.textContent = letters[Math.floor(Math.random()*letters.length)];
+  letter.style.left = Math.random() * game.clientWidth + 'px';
+  letter.style.top = game.clientHeight + 'px';
+  game.appendChild(letter);
+  let pos = game.clientHeight;
+  const interval = setInterval(() => {
+    pos -= 2;
+    letter.style.top = pos + 'px';
+    if(pos < -20){ letter.remove(); clearInterval(interval);}
+  }, 20);
+}
+
+setInterval(createLetter, 200);
+
+// Клики
+yesBtn.addEventListener('click',()=>{
+  score += 1;
+  scoreDisplay.textContent = 'Очки: '+score;
+  moveNoBtn();
+});
+noBtn.addEventListener('mouseenter', moveNoBtn);
+
+// Начальная позиция
+moveNoBtn();
 </script>
 </body>
 </html>
