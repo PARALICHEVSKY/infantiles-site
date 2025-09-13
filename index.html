@@ -3,231 +3,584 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NightShift — Ночная смена (FNAF-like)</title>
+<title>Night Guard — демо (FNAF-like)</title>
 <style>
-  :root{--bg:#0b0b10;--panel:#0f1720;--accent:#9be3ff}
-  html,body{height:100%;margin:0;background:var(--bg);color:#e6eef6;font-family:Inter,Segoe UI,Arial,sans-serif}
-  .wrap{max-width:1000px;margin:18px auto;display:flex;gap:14px}
-  .left{flex:1;background:var(--panel);border-radius:10px;padding:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-  .right{width:320px;background:linear-gradient(180deg,#0c1218,#0b1014);border-radius:10px;padding:12px}
-  canvas{display:block;width:100%;height:420px;border-radius:6px;background:#05060a}
-  h1{font-size:18px;margin:0 0 8px}
-  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  button{background:#18222b;color:#dbe9f8;border:0;padding:10px;border-radius:8px;cursor:pointer;font-weight:700}
-  button.toggled{background:#6b9e6f;color:#fff}
-  .stat{margin:8px 0}
-  .meter{height:12px;background:#071018;border-radius:6px;overflow:hidden}
+  :root{
+    --bg:#06060a; --panel:#0f1720; --accent:#68c28a; --danger:#ff5c5c;
+    --glass: rgba(255,255,255,0.03);
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#dfe9ef;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1100px;margin:14px auto;display:flex;gap:14px;padding:8px}
+  .left{flex:1;min-width:640px;background:linear-gradient(180deg,#07080b,#0b0f13);border-radius:12px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+  .right{width:320px;background:linear-gradient(180deg,#071018,#0a1116);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  header h1{font-size:18px;margin:0}
+  #canvas{width:100%;height:480px;background:#020306;border-radius:8px;display:block}
+  .controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  button{background:#162029;color:#dff; border:0;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  button.toggled{background:var(--accent);color:#062317}
+  .meter{height:12px;background:#081016;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
   .meter > i{display:block;height:100%;background:linear-gradient(90deg,#68f,#39f);width:100%}
-  .log{height:140px;overflow:auto;background:#050914;border-radius:6px;padding:8px;border:1px solid rgba(255,255,255,0.03);font-size:13px}
-  footer{color:#88a;opacity:0.8;margin-top:8px}
+  .log{height:140px;overflow:auto;background:#050814;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.03);font-size:13px}
+  .small{font-size:13px;color:#9fb}
+  .muted{opacity:0.6}
+  .center{display:flex;align-items:center;gap:8px}
+  footer{margin-top:10px;color:#89a;font-size:12px}
   .titleRow{display:flex;justify-content:space-between;align-items:center}
+  /* camera grid modal */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.7));z-index:50}
+  .modal .box{width:880px;max-width:95%;background:var(--panel);border-radius:10px;padding:10px}
+  .camsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .camTile{background:#05080b;border-radius:6px;height:160px;display:flex;align-items:center;justify-content:center;color:#9bd;font-weight:700}
+  /* responsive */
+  @media(max-width:980px){ .wrap{flex-direction:column} .right{width:100%} .left{min-width:auto} }
 </style>
 </head>
 <body>
   <div class="wrap">
     <div class="left">
-      <div class="titleRow"><h1>NightShift — Ночная смена</h1><div id="clockDisplay">20:00</div></div>
-      <canvas id="mainCanvas" width="720" height="420"></canvas>
-      <div class="controls">
-        <button id="camBtn">Камеры</button>
-        <button id="leftDoor">Дверь слева</button>
-        <button id="rightDoor">Дверь справа</button>
-        <button id="leftLight">Свет слева</button>
-        <button id="rightLight">Свет справа</button>
-        <button id="muteBtn">Звук</button>
+      <header>
+        <div>
+          <h1>Night Guard — демо</h1>
+          <div class="small muted">Ночь: <span id="nightName">1</span>  —  Цель: продержаться до 06:00</div>
+        </div>
+        <div class="center">
+          <div class="small">Время: <strong id="clock">20:00</strong></div>
+          <div style="width:12px"></div>
+          <div class="small">Энергия: <strong id="energyVal">100%</strong></div>
+        </div>
+      </header>
+
+      <canvas id="canvas" width="960" height="480"></canvas>
+
+      <div class="controls" style="margin-top:10px">
+        <button id="camsBtn">Камеры</button>
+        <button id="leftDoorBtn">Дверь слева</button>
+        <button id="rightDoorBtn">Дверь справа</button>
+        <button id="leftLightBtn">Свет слева</button>
+        <button id="rightLightBtn">Свет справа</button>
+        <button id="audioBtn">Звук</button>
+        <button id="startBtn" style="margin-left:auto">Start Night</button>
+        <button id="restartBtn">Restart</button>
       </div>
-      <div style="margin-top:8px;color:#aebfd0;font-size:13px">Цель: продержать ночь с 00:00 до 06:00. Следи за камерами, сохраняй энергию — закрывать двери и свет тратит энергию.</div>
+
+      <div style="display:flex;gap:10px;margin-top:10px">
+        <div style="flex:1">
+          <div class="small">Системные сообщения</div>
+          <div id="log" class="log"></div>
+        </div>
+        <div style="width:260px">
+          <div class="small">Информация</div>
+          <div style="margin-top:6px">
+            <div class="small">Камера: <span id="camLabel">CAM 1</span></div>
+            <div style="height:8px"></div>
+            <div class="small">Аниматроники:</div>
+            <div id="aiList" class="small muted">—</div>
+            <div style="height:8px"></div>
+            <div class="small">Энергия (бар)</div>
+            <div class="meter" style="margin-top:6px"><i id="energyBar" style="width:100%"></i></div>
+            <div style="height:8px"></div>
+            <div class="small">Советы:</div>
+            <div class="small muted">Камеры потребляют энергию, закрытие дверей защищает, но отнимает энергию. Не теряй энергию полностью — иначе отключение.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="right">
-      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong>Энергия</strong></div><div id="energyVal">100%</div></div>
-      <div class="meter" style="margin-top:6px"><i id="energyBar" style="width:100%"></i></div>
-
-      <div class="stat"><strong>Камера</strong><div id="camName">Камера 1</div></div>
-      <div class="stat"><strong>Аниматроники</strong><div id="aiList">Близко: —</div></div>
-
-      <div style="margin-top:8px"><strong>События</strong>
-        <div class="log" id="log"></div>
+      <div class="small">Настройки и прогресс</div>
+      <div style="margin-top:6px">
+        <div style="display:flex;justify-content:space-between"><div>Ночь</div><div id="night">{1}</div></div>
+        <div style="height:10px"></div>
+        <div style="display:flex;justify-content:space-between"><div>Сложность</div>
+          <select id="difficulty">
+            <option value="0.8">Лёгкая</option>
+            <option value="1.0" selected>Нормальная</option>
+            <option value="1.3">Сложная</option>
+          </select>
+        </div>
       </div>
 
-      <div style="margin-top:10px;display:flex;gap:8px"><button id="startBtn">Начать смену</button><button id="restartBtn">Рестарт</button></div>
-      <footer>Игра — демо. Можно расширить: дополнительные камеры, ночи, сложность, звуки и спрайты.</footer>
+      <div style="height:10px"></div>
+      <div class="small">Сохранение/ассеты</div>
+      <div style="margin-top:6px;font-size:13px;color:#9ab">В этом демо используются procedural звуки и простые графические заглушки. Чтобы подставить свои спрайты/звуки — замени соответствующие ресурсы в коде (см. комментарии).</div>
+
+      <div style="height:12px"></div>
+      <div style="display:flex;gap:8px">
+        <button id="exportBtn">Экспорт лога</button>
+        <button id="clearLogBtn">Очистить лог</button>
+      </div>
+
+      <footer>Демо — не копия оригинала. Можно расширить: реальные спрайты, звуки, ночи, анимации, мобильная оптимизация.</footer>
+    </div>
+  </div>
+
+  <!-- Camera modal -->
+  <div class="modal" id="camsModal">
+    <div class="box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:700">Камеры</div>
+        <button id="closeCams">Close</button>
+      </div>
+      <div class="camsGrid" id="camsGrid">
+        <div class="camTile">CAM 1 — Фойе</div>
+        <div class="camTile">CAM 2 — Коридор</div>
+        <div class="camTile">CAM 3 — Кухня</div>
+        <div class="camTile">CAM 4 — Хранение</div>
+        <div class="camTile">CAM 5 — Стол</div>
+        <div class="camTile">CAM 6 — Ход</div>
+      </div>
     </div>
   </div>
 
 <script>
-// NightShift — simplified FNAF-like browser demo
-(() => {
-  const canvas = document.getElementById('mainCanvas');
-  const ctx = canvas.getContext('2d');
-  const energyBar = document.getElementById('energyBar');
-  const energyVal = document.getElementById('energyVal');
-  const logEl = document.getElementById('log');
-  const camNameEl = document.getElementById('camName');
-  const aiListEl = document.getElementById('aiList');
-  const clockDisplay = document.getElementById('clockDisplay');
+/*
 
-  // buttons
-  const camBtn = document.getElementById('camBtn');
-  const leftDoorBtn = document.getElementById('leftDoor');
-  const rightDoorBtn = document.getElementById('rightDoor');
-  const leftLightBtn = document.getElementById('leftLight');
-  const rightLightBtn = document.getElementById('rightLight');
+Night Guard — FNAF-like browser demo
+Single-file; no external assets needed.
+Features:
+ - Multiple animatronics with state machines
+ - Cameras modal (viewing cameras increases energy drain)
+ - Doors and lights (toggle)
+ - Energy system, clock (00:00 -> 06:00), win/lose logic
+ - Procedural jump-scare (simple overlay + oscillator sound)
+ - Easy to replace images/sounds: see placeholders below
+
+How to customize assets:
+ - Replace 'drawOffice', 'drawCameraView' with actual image draws
+ - Hook real audio files to the Audio API where oscillator is used
+
+*/
+
+(() => {
+  // Canvas
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // UI elements
+  const camsBtn = document.getElementById('camsBtn');
+  const camsModal = document.getElementById('camsModal');
+  const closeCams = document.getElementById('closeCams');
+  const leftDoorBtn = document.getElementById('leftDoorBtn');
+  const rightDoorBtn = document.getElementById('rightDoorBtn');
+  const leftLightBtn = document.getElementById('leftLightBtn');
+  const rightLightBtn = document.getElementById('rightLightBtn');
+  const audioBtn = document.getElementById('audioBtn');
   const startBtn = document.getElementById('startBtn');
   const restartBtn = document.getElementById('restartBtn');
-  const muteBtn = document.getElementById('muteBtn');
+  const logEl = document.getElementById('log');
+  const camLabel = document.getElementById('camLabel');
+  const aiListEl = document.getElementById('aiList');
+  const energyBar = document.getElementById('energyBar');
+  const energyVal = document.getElementById('energyVal');
+  const clockEl = document.getElementById('clock');
+  const difficultyEl = document.getElementById('difficulty');
+  const exportBtn = document.getElementById('exportBtn');
+  const clearLogBtn = document.getElementById('clearLogBtn');
+  const nightNameEl = document.getElementById('nightName');
 
-  // game state
+  // Game state
   let running = false;
-  let showCams = false;
-  let currentCam = 0;
-  let energy = 100;
-  let timeMinutes = 20*60; // start 20:00 (use minutes as seconds here for demo speed)
-  let targetEnd = 6*60; // 6:00
-  let tickInterval = null;
-  let ai = [];
   let audioOn = true;
+  let showCameras = false;
+  let currentCam = 0; // index displayed in corner
+  let nightNumber = 1;
 
-  function log(msg){ const t = new Date().toLocaleTimeString(); logEl.innerHTML = '['+t+'] '+msg + '<br>' + logEl.innerHTML; }
+  // time system:
+  // We'll simulate game minutes/ticks. For demo speed: 1 tick = 1 real second -> 1 in-game minute
+  let minutes = 20*60; // start at 20:00 to preview, will jump to 0:00 when start
+  const WIN_HOUR = 6; // 6:00
+  let tickInterval = null;
 
-  // simple animatronics with positions across map nodes
+  // energy
+  let energy = 100;
+
+  // facility nodes (simplified map): indexes for animatronics
+  // 0: Stage, 1: Hall, 2: Dining, 3: Kitchen, 4: LeftDoor, 5: RightDoor, 6: Office
   const mapNodes = ['Stage','Hall','Dining','Kitchen','LeftDoor','RightDoor','Office'];
-  function createAI(name, start, speed, aggressiveness){
-    return {name, pos:start, speed, aggression:aggressiveness, lastMove:0, active:true}
+
+  // Animatronic prototypes (unique names, original)
+  const prototypes = [
+    {name:'Specter', speed:6, aggression:0.12, color:'#f08'},
+    {name:'Gear', speed:5, aggression:0.10, color:'#6bf'},
+    {name:'Husk', speed:7, aggression:0.14, color:'#fb6'}
+  ];
+
+  // Active animatronics
+  let bots = [];
+
+  // Utility
+  function log(msg){
+    const t = new Date().toLocaleTimeString();
+    const el = `<div>[${t}] ${msg}</div>`;
+    logEl.innerHTML = el + logEl.innerHTML;
   }
 
-  function resetGame(){
-    running=false; showCams=false; currentCam=0; energy=100; timeMinutes = 20*60; ai = [];
-    ai.push(createAI('Марио', 0, 6, 0.15));
-    ai.push(createAI('Бот', 0, 5, 0.12));
-    updateUI(); drawOffice(); log('Игра готова. Нажми "Начать смену".');
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  // Initialize bots for a night (increase aggression with night)
+  function setupBots(){
+    bots = prototypes.map((p,idx) => ({
+      id: idx,
+      name: p.name,
+      color: p.color,
+      pos: 0,
+      speed: p.speed * (1 + (nightNumber-1)*0.06),
+      baseAgg: p.aggression,
+      aggression: p.aggression * (1 + (nightNumber-1)*0.08), // scales with night
+      lastMove: 0,
+      active: true
+    }));
+  }
+
+  // UI toggles
+  camsBtn.addEventListener('click', ()=>{ camsModal.style.display='flex'; });
+  closeCams.addEventListener('click', ()=>{ camsModal.style.display='none'; });
+  leftDoorBtn.addEventListener('click', ()=>{ leftDoorBtn.classList.toggle('toggled'); log(leftDoorBtn.classList.contains('toggled') ? 'Левая дверь закрыта' : 'Левая дверь открыта'); });
+  rightDoorBtn.addEventListener('click', ()=>{ rightDoorBtn.classList.toggle('toggled'); log(rightDoorBtn.classList.contains('toggled') ? 'Правая дверь закрыта' : 'Правая дверь открыта'); });
+  leftLightBtn.addEventListener('click', ()=>{ leftLightBtn.classList.toggle('toggled'); log(leftLightBtn.classList.contains('toggled') ? 'Свет слева включён' : 'Свет слева выключен'); });
+  rightLightBtn.addEventListener('click', ()=>{ rightLightBtn.classList.toggle('toggled'); log(rightLightBtn.classList.contains('toggled') ? 'Свет справа включён' : 'Свет справа выключен'); });
+  audioBtn.addEventListener('click', ()=>{ audioOn = !audioOn; audioBtn.classList.toggle('toggled', !audioOn); audioBtn.textContent = audioOn ? 'Звук' : 'Выключен'; });
+  restartBtn.addEventListener('click', ()=>{ stopGame(); initGame(); });
+  exportBtn.addEventListener('click', ()=>{ downloadLog(); });
+  clearLogBtn.addEventListener('click', ()=>{ logEl.innerHTML=''; });
+
+  function downloadLog(){
+    const blob = new Blob([logEl.innerText], {type:'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'night_log.txt'; a.click();
+    URL.revokeObjectURL(url);
+    log('Лог экспортирован.');
+  }
+
+  // Start/Stop
+  startBtn.addEventListener('click', ()=>{ if(!running) startGame(); });
+
+  function initGame(){
+    minutes = 0; // will be set to 0:00 on start
+    energy = 100;
+    nightNumber = 1;
+    nightNameEl.textContent = nightNumber;
+    setupBots();
+    updateUI();
+    drawOffice();
+    log('Демо готово. Нажми Start Night чтобы начать.');
+  }
+
+  function startGame(){
+    running = true;
+    // set clock to 00:00
+    minutes = 0;
+    // scale bots by difficulty
+    const diff = parseFloat(difficultyEl.value || 1.0);
+    bots.forEach(b => { b.speed *= diff; b.aggression *= diff; });
+    log('Смена началась. Удачи.');
     if(tickInterval) clearInterval(tickInterval);
+    tickInterval = setInterval(tick, 1000); // 1s tick
   }
 
-  function startGame(){ if(running) return; running=true; log('Смена началась. Удачи.'); tickInterval = setInterval(tick, 1000); }
-  function endGame(win, reason){ running=false; clearInterval(tickInterval); tickInterval=null; if(win) { log('Вы продержались до 06:00 — Победа!'); showWin(); } else { log('Джампскэр! ' + reason); showJumpscare(reason); } }
+  function stopGame(){
+    running = false;
+    if(tickInterval) clearInterval(tickInterval);
+    tickInterval = null;
+  }
 
+  // Tick: 1 in-game minute per second (demo)
   function tick(){
-    // advance in-game clock faster (demo): every real second -> 1 in-game minute
-    timeMinutes += 1; // 1-minute steps
-    const hours = Math.floor((timeMinutes/60))%24;
-    const mins = Math.floor(timeMinutes%60);
-    clockDisplay.textContent = String(hours).padStart(2,'0')+':' + String(mins).padStart(2,'0');
+    if(!running) return;
+    // advance time
+    minutes += 1; // 1 minute
+    const hours = Math.floor(minutes/60) % 24;
+    const mins = Math.floor(minutes%60);
+    clockEl.textContent = String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0');
 
-    // energy drain by systems
-    let drain = 0.2; // baseline
-    if(leftDoorBtn.classList.contains('toggled')) drain += 0.8;
-    if(rightDoorBtn.classList.contains('toggled')) drain += 0.8;
-    if(leftLightBtn.classList.contains('toggled')) drain += 0.3;
-    if(rightLightBtn.classList.contains('toggled')) drain += 0.3;
-    if(showCams) drain += 0.25;
-    energy = Math.max(0, energy - drain);
-    energyBar.style.width = energy + '%'; energyVal.textContent = Math.round(energy) + '%';
+    // energy drain
+    let drain = 0.12; // baseline per minute
+    if(leftDoorBtn.classList.contains('toggled')) drain += 0.75;
+    if(rightDoorBtn.classList.contains('toggled')) drain += 0.75;
+    if(leftLightBtn.classList.contains('toggled')) drain += 0.28;
+    if(rightLightBtn.classList.contains('toggled')) drain += 0.28;
+    if(document.getElementById('camsModal').style.display === 'flex') drain += 0.4;
+    energy = clamp(energy - drain, 0, 100);
+    energyBar.style.width = energy + '%';
+    energyVal.textContent = Math.round(energy) + '%';
 
-    if(energy <= 0){ endGame(false, 'Отсутствие энергии — системы не работают.'); return; }
+    // if energy hits zero -> systems offline -> lose eventually
+    if(energy <= 0){
+      log('Энергия исчерпана. Системы отключены.');
+      lose('Энергия закончилась — системы отключены.');
+      return;
+    }
 
-    // move animatronics occasionally based on speed and aggression
-    ai.forEach(a=>{
-      if(!a.active) return;
-      a.lastMove++;
-      const moveThreshold = Math.max(2, Math.floor(a.speed / (1 + a.aggression* (1 - energy/100))));
-      if(a.lastMove >= moveThreshold){
-        a.lastMove = 0;
-        if(Math.random() < a.aggression + (1 - energy/200)){
-          // move forward towards office
-          if(a.pos < mapNodes.length-1) a.pos++;
-          log(a.name + ' передвинулся в ' + mapNodes[a.pos]);
-        } else {
+    // move bots
+    const diff = parseFloat(difficultyEl.value || 1.0);
+    bots.forEach(bot => {
+      if(!bot.active) return;
+      bot.lastMove++;
+      // movement threshold depends on speed and aggression and current energy
+      const energyFactor = 1 + (1 - energy/200); // more aggressive when energy low slightly
+      const threshold = Math.max(2, Math.floor(bot.speed / (1 + bot.aggression * energyFactor)));
+      if(bot.lastMove >= threshold){
+        bot.lastMove = 0;
+        // probabilistic forward move
+        if(Math.random() < bot.aggression + (nightNumber-1)*0.02 + (1 - energy/200)*0.05){
+          if(bot.pos < mapNodes.length - 1){
+            bot.pos++;
+            log(`${bot.name} продвинулся в ${mapNodes[bot.pos]}`);
+          }
+        } else if(Math.random() < 0.12){
           // small chance to move back
-          if(a.pos > 0 && Math.random()<0.1) { a.pos--; log(a.name + ' ушёл назад в ' + mapNodes[a.pos]); }
+          if(bot.pos > 0) { bot.pos--; log(`${bot.name} вернулся к ${mapNodes[bot.pos]}`); }
         }
       }
     });
 
-    // check if someone reached office
-    const atOffice = ai.filter(a=> a.pos >= mapNodes.length-1 && a.active);
-    if(atOffice.length>0){
-      // if corresponding door closed or light on, they may be held back
-      const leftHere = ai.filter(a=> mapNodes[a.pos] === 'LeftDoor');
-      const rightHere = ai.filter(a=> mapNodes[a.pos] === 'RightDoor');
-      const officeHere = atOffice;
-      // if any reach office, check doors
-      const officeInvaded = ai.some(a => a.pos === mapNodes.length-1);
-      if(officeInvaded){
-        // if either door closed? in this simplified demo, doors block LeftDoor/RightDoor nodes
+    // check proximity and handle door blocking
+    // If any bot reached 'Office' node -> check immediate jumpscare unless blocked by door mechanic
+    bots.forEach(bot => {
+      if(bot.pos >= mapNodes.length - 1){
+        // if doors are closed they may still bypass with small chance
         const leftClosed = leftDoorBtn.classList.contains('toggled');
         const rightClosed = rightDoorBtn.classList.contains('toggled');
-        // if animatronic attempted to pass through a door node when closed, he stays
-        // but if already at office node we check immediate game over
-        // check probability to jumpscare based on closeness + low energy
-        let danger = 0.7; // default
-        if(energy > 30) danger -= 0.25;
-        if(leftClosed || rightClosed) danger -= 0.3;
-        if(Math.random() < danger){ endGame(false, 'Кто-то добрался до офиса.'); return; }
+        const blocked = leftClosed || rightClosed;
+        // compute chance to break in
+        let baseBreak = 0.7 - (energy/200); // less likely if energy high
+        if(blocked) baseBreak -= 0.4; // doors help
+        baseBreak = clamp(baseBreak, 0.05, 0.95);
+        if(Math.random() < baseBreak){
+          lose(`${bot.name} пришёл в офис.`);
+        } else {
+          // bot gets delayed / goes back slightly
+          bot.pos = mapNodes.length - 2; // pulls back to previous node
+          log(`${bot.name} не смог пробиться в офис и отступил.`);
+        }
       }
-    }
+    });
 
-    // win condition (we're counting until 6:00)
-    if(hours >= 6){ endGame(true); return; }
+    // win condition: survive to 6:00
+    if(hours >= WIN_HOUR){
+      win();
+      return;
+    }
 
     updateUI();
     drawOffice();
   }
 
-  function updateUI(){ camNameEl.textContent = 'Камера '+(currentCam+1); aiListEl.textContent = ai.map(a => a.name+': '+mapNodes[a.pos]).join('; '); }
-
-  // UI toggles
-  camBtn.addEventListener('click', ()=>{ showCams = !showCams; camBtn.classList.toggle('toggled', showCams); drawOffice(); });
-  leftDoorBtn.addEventListener('click', ()=>{ leftDoorBtn.classList.toggle('toggled'); });
-  rightDoorBtn.addEventListener('click', ()=>{ rightDoorBtn.classList.toggle('toggled'); });
-  leftLightBtn.addEventListener('click', ()=>{ leftLightBtn.classList.toggle('toggled'); });
-  rightLightBtn.addEventListener('click', ()=>{ rightLightBtn.classList.toggle('toggled'); });
-  muteBtn.addEventListener('click', ()=>{ audioOn = !audioOn; muteBtn.classList.toggle('toggled', !audioOn); muteBtn.textContent = audioOn? 'Звук' : 'Без звука'; });
-
-  startBtn.addEventListener('click', startGame);
-  restartBtn.addEventListener('click', ()=>{ resetGame(); });
-
-  // drawing: either office view or camera grid
-  function drawOffice(){ ctx.clearRect(0,0,canvas.width,canvas.height);
-    // background office
-    ctx.fillStyle='#0b0f14'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle='#1a1f25'; ctx.fillRect(40,40,440,340);
-    ctx.fillStyle='#2a3036'; ctx.fillRect(520,40,160,340);
-    // desk
-    ctx.fillStyle='#3b2f26'; ctx.fillRect(80,250,120,100);
-    // doors indicators
-    ctx.fillStyle = leftDoorBtn.classList.contains('toggled') ? '#ff4d4d' : '#2b2f34'; ctx.fillRect(30,160,10,60);
-    ctx.fillStyle = rightDoorBtn.classList.contains('toggled') ? '#ff4d4d' : '#2b2f34'; ctx.fillRect(690-10,160,10,60);
-
-    // lights
-    if(leftLightBtn.classList.contains('toggled')){ ctx.fillStyle='rgba(255,255,200,0.08)'; ctx.fillRect(0,0,200,420); }
-    if(rightLightBtn.classList.contains('toggled')){ ctx.fillStyle='rgba(255,255,200,0.06)'; ctx.fillRect(520,0,200,420); }
-
-    // draw simple animatronics on map if camera mode
-    const nodeX = [100,200,300,380,480,560,640];
-    const nodeY = [120,120,120,120,200,200,120];
-    ctx.fillStyle='#223'; ctx.font='12px sans-serif';
-    for(let i=0;i<mapNodes.length;i++){ ctx.fillStyle='#162022'; ctx.fillRect(nodeX[i]-28,nodeY[i]-28,56,56); ctx.fillStyle='#88b'; ctx.fillText(mapNodes[i], nodeX[i]-22, nodeY[i]+40); }
-
-    // draw ai as circles
-    ai.forEach((a,idx)=>{
-      const x = nodeX[a.pos]; const y = nodeY[a.pos];
-      ctx.beginPath(); ctx.fillStyle = idx===0? '#b86' : '#6ab'; ctx.arc(x,y,16,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#111'; ctx.fillText(a.name, x-18, y+32);
-    });
-
-    // if camera view active, show a grid overlay
-    if(showCams){ ctx.strokeStyle='rgba(200,220,255,0.06)'; ctx.lineWidth=2; ctx.strokeRect(48,48,420,320); ctx.fillStyle='rgba(255,255,255,0.02)'; ctx.fillRect(48,48,420,320); ctx.fillStyle='#cde'; ctx.font='14px sans-serif'; ctx.fillText('Камеры — обзор коридоров', 60,70); }
-
-    // draw office camera window on the right
-    ctx.fillStyle='#051018'; ctx.fillRect(528,56,144,96); ctx.fillStyle='#9bd'; ctx.fillText('Монитор', 540,72);
+  // Win/Lose
+  function win(){
+    stopGame();
+    overlayWin();
+    log('Ты продержался до 06:00 — Победа!');
   }
 
-  // simple jumpscare overlay
-  function showJumpscare(reason){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.font='42px sans-serif'; ctx.fillText('!!! ДЖАМПСКЭЙР !!!', 80,200); ctx.font='18px sans-serif'; ctx.fillText(reason, 80,240); }
-  function showWin(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#071'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#eaf'; ctx.font='28px sans-serif'; ctx.fillText('Ты продержался! Победа!', 80,200); }
+  function lose(reason){
+    stopGame();
+    log('Проигрыш: ' + reason);
+    overlayJumpscare(reason);
+  }
 
-  // init
-  resetGame();
+  // Drawing functions: office view + camera views
+  function drawOffice(){
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0,0,W,H);
+
+    // background
+    const grad = ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'#0a0c10'); grad.addColorStop(1,'#060608');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+    // room (simple pseudo-3D box)
+    ctx.fillStyle = '#101418'; ctx.fillRect(48,48,560,384);
+    // desk
+    ctx.fillStyle = '#2a2220'; ctx.fillRect(120,320,160,80);
+    // monitors
+    ctx.fillStyle = '#06080a'; ctx.fillRect(140,330,120,60); ctx.fillStyle = '#0c2230'; ctx.fillRect(150,340,100,40);
+    // chair
+    ctx.fillStyle = '#1c1c1c'; roundRect(ctx,320,320,60,80,6,true,false);
+    // door indicators
+    ctx.fillStyle = leftDoorBtn.classList.contains('toggled') ? '#ff6464' : '#122'; ctx.fillRect(28,200,12,80); // left
+    ctx.fillStyle = rightDoorBtn.classList.contains('toggled') ? '#ff6464' : '#122'; ctx.fillRect(W-40,200,12,80); // right
+
+    // lights effect
+    if(leftLightBtn.classList.contains('toggled')){
+      ctx.fillStyle = 'rgba(255,240,200,0.06)'; ctx.fillRect(0,0,220,H);
+    }
+    if(rightLightBtn.classList.contains('toggled')){
+      ctx.fillStyle = 'rgba(255,240,200,0.05)'; ctx.fillRect(W-260,0,260,H);
+    }
+
+    // draw minimap nodes and bots
+    const nodesX = [120,220,320,420,500,580,640];
+    const nodesY = [120,120,120,120,220,220,120];
+    ctx.font = '12px monospace'; ctx.fillStyle = '#8ab';
+    nodesX.forEach((x,i) => {
+      ctx.fillStyle = '#0d1b23';
+      roundRect(ctx, x-28, nodesY[i]-28, 56, 56, 8, true, false);
+      ctx.fillStyle = '#8ab'; ctx.fillText(mapNodes[i], x-22, nodesY[i]+40);
+    });
+
+    // draw bots on map (small circles)
+    bots.forEach((b, idx) => {
+      const x = nodesX[b.pos]; const y = nodesY[b.pos];
+      ctx.beginPath(); ctx.fillStyle = b.color; ctx.arc(x, y, 16, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#031'; ctx.fillText(b.name, x-22, y+34);
+    });
+
+    // overlay camera label small
+    ctx.fillStyle = '#9bd'; ctx.font = '14px sans-serif'; ctx.fillText('Office View', 60, 72);
+  }
+
+  // Small helper roundRect
+  function roundRect(ctx, x, y, w, h, r, fill, stroke){
+    if (typeof stroke === 'undefined') stroke = true;
+    if (typeof r === 'undefined') r = 5;
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y,   x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x,   y+h, r);
+    ctx.arcTo(x,   y+h, x,   y,   r);
+    ctx.arcTo(x,   y,   x+w, y,   r);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+  }
+
+  // Camera grid view (modal shows static tiles). For in-canvas drawn camera preview:
+  function drawCameraView(index){
+    // Draw simple camera preview into the main canvas (small simulation)
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0,0,W,H);
+    // background
+    ctx.fillStyle = '#03050a'; ctx.fillRect(0,0,W,H);
+    // draw 3x2 grid of camera output
+    const cols = 3, rows = 2;
+    const pad = 12;
+    const tileW = Math.floor((W - pad*(cols+1))/cols);
+    const tileH = Math.floor((H - pad*(rows+1))/rows);
+    ctx.font = '14px sans-serif';
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const x = pad + c*(tileW+pad);
+        const y = pad + r*(tileH+pad);
+        ctx.fillStyle = '#0b1320'; roundRect(ctx,x,y,tileW,tileH,6,true,false);
+        ctx.fillStyle = '#9bd'; ctx.fillText(`CAM ${r*cols + c + 1}`, x+10, y+20);
+        // show bots randomly in camera (if bot pos corresponds to camera index mapping)
+        bots.forEach((b,i)=>{
+          // simple mapping for demo: bot.pos modulo cameras
+          if((b.pos % (cols*rows)) === (r*cols+c)){
+            ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(x+tileW-40, y+40, 18, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.fillText(b.name, x+tileW-90, y+45);
+          }
+        });
+      }
+    }
+    ctx.fillStyle = '#9bd'; ctx.fillText('Press Close to return', 20, H-20);
+  }
+
+  // Jumpscare overlay (procedural)
+  function overlayJumpscare(reason){
+    // visual overlay & sound
+    const W = canvas.width, H = canvas.height;
+    // flash effect
+    const frames = 24;
+    let f = 0;
+    // audio: quick oscillator burst
+    let osc;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioOn){
+      osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain(); osc.connect(g); g.connect(audioCtx.destination);
+      osc.type = 'sawtooth'; osc.frequency.value = 120; g.gain.value = 0.0; osc.start();
+      // ramp loud
+      g.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+    }
+
+    function frame(){
+      ctx.fillStyle = `rgba(0,0,0,${0.3 + 0.6*Math.sin(f/2)})`; ctx.fillRect(0,0,W,H);
+      // grow a red face box
+      const size = Math.min(W,H) * (0.3 + 1.8 * (f/frames));
+      ctx.fillStyle = `rgba(255,30,30,${0.9 - f/frames})`;
+      ctx.fillRect((W-size)/2, (H-size)/2, size, size);
+      ctx.fillStyle = '#fff'; ctx.font = '48px sans-serif'; ctx.fillText('!!!', (W-size)/2 + 20, H/2);
+      f++;
+      if(f < frames) requestAnimationFrame(frame);
+      else {
+        if(osc) { try { osc.stop(); } catch(e){} }
+        drawOffice();
+        log('Jumpscare: ' + reason);
+      }
+    }
+    frame();
+  }
+
+  function overlayWin(){
+    const W = canvas.width, H = canvas.height;
+    ctx.fillStyle = '#063'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#dff'; ctx.font = '36px sans-serif'; ctx.fillText('Ты продержался! Победа!', 80, H/2);
+  }
+
+  // UI update
+  function updateUI(){
+    aiListEl.textContent = bots.map(b => `${b.name}: ${mapNodes[b.pos]}`).join('; ');
+    camLabel.textContent = `CAM ${currentCam+1}`;
+    nightNameEl.textContent = nightNumber;
+  }
+
+  // Event: clicking on canvas toggles camera small preview cycle
+  canvas.addEventListener('click', (e) => {
+    // for demo, cycle small camera index and show preview text
+    currentCam = (currentCam + 1) % 6;
+    camLabel.textContent = `CAM ${currentCam+1}`;
+    // small camera preview drawn in corner
+    drawMiniCamPreview(currentCam);
+  });
+
+  function drawMiniCamPreview(i){
+    // draw a small overlay camera box with simple indication
+    const W = canvas.width, H = canvas.height;
+    const boxW = 220, boxH = 120;
+    const x = W - boxW - 16, y = 16;
+    ctx.fillStyle = '#09131a'; roundRect(ctx, x, y, boxW, boxH, 6, true, true);
+    ctx.fillStyle = '#9bd'; ctx.font = '14px sans-serif'; ctx.fillText(`CAM ${i+1}`, x+12, y+24);
+    // show any bots that map to this cam index (simple mapping)
+    bots.forEach((b) => {
+      if((b.pos % 6) === i){
+        ctx.fillStyle = b.color; ctx.beginPath(); ctx.arc(x+boxW-40, y+40, 18, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.fillText(b.name, x+12, y+48);
+      }
+    });
+    // auto remove preview after 1.5s
+    setTimeout(drawOffice, 1500);
+  }
+
+  // On close cams modal, draw camera grid into main canvas for a moment
+  document.getElementById('closeCams').addEventListener('click', ()=>{
+    camsModal.style.display = 'none';
+    // briefly show camera grid in canvas (simulate watching cams)
+    drawCameraView(0);
+  });
+
+  // Simple mapping: clicking door area toggles
+  // Start initial render
+  function resizeCanvas(){
+    // keep canvas pixel size stable for clarity
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.min(window.innerWidth*0.9, 960);
+    canvas.height = Math.min(600, 480);
+    drawOffice();
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // Initialize
+  initGame();
+
+  // expose globals for debugging
+  window._nightGuard = { bots, startGame, stopGame, drawOffice };
+
 })();
 </script>
 </body>
