@@ -1,262 +1,234 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MeowSim — Мяусим (браузер)</title>
-  <style>
-    :root{--bg:#f7f7fb;--panel:#fff;--accent:#6b9e6f}
-    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);color:#222}
-    .wrap{max-width:1000px;margin:20px auto;display:flex;gap:16px}
-    .game{flex:1;background:var(--panel);box-shadow:0 6px 18px rgba(15,15,20,0.06);border-radius:12px;padding:14px}
-    .sidebar{width:300px;background:var(--panel);box-shadow:0 6px 18px rgba(15,15,20,0.06);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
-    canvas{background:linear-gradient(#f4f7fb,#eef2f6);width:100%;height:440px;border-radius:8px;display:block}
-    h1{font-size:18px;margin:0 0 6px}
-    .stats{display:flex;flex-direction:column;gap:8px}
-    .bar{background:#eee;border-radius:6px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center}
-    .bar .meter{height:10px;background:#ddd;border-radius:6px;flex:1;margin-left:8px;margin-right:8px;overflow:hidden}
-    .meter > i{display:block;height:100%;background:var(--accent);width:50%}
-    button{background:var(--accent);color:#fff;border:0;padding:10px;border-radius:8px;cursor:pointer;font-weight:600}
-    button.secondary{background:#4a6b83}
-    .messages{height:110px;overflow:auto;background:#fafafa;border-radius:8px;padding:8px;font-size:13px;border:1px solid #eee}
-    .toprow{display:flex;gap:8px}
-    .shop-list{display:flex;flex-direction:column;gap:10px}
-    .shop-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:#fff;border:1px solid #eee}
-    .inventory{display:flex;flex-wrap:wrap;gap:8px}
-    .toy{padding:6px 10px;border-radius:8px;background:#fff;border:1px solid #eee;font-size:13px}
-    footer{margin-top:8px;font-size:12px;color:#666}
-    @media(max-width:880px){.wrap{flex-direction:column}.sidebar{width:100%}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NightShift — Ночная смена (FNAF-like)</title>
+<style>
+  :root{--bg:#0b0b10;--panel:#0f1720;--accent:#9be3ff}
+  html,body{height:100%;margin:0;background:var(--bg);color:#e6eef6;font-family:Inter,Segoe UI,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:18px auto;display:flex;gap:14px}
+  .left{flex:1;background:var(--panel);border-radius:10px;padding:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+  .right{width:320px;background:linear-gradient(180deg,#0c1218,#0b1014);border-radius:10px;padding:12px}
+  canvas{display:block;width:100%;height:420px;border-radius:6px;background:#05060a}
+  h1{font-size:18px;margin:0 0 8px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  button{background:#18222b;color:#dbe9f8;border:0;padding:10px;border-radius:8px;cursor:pointer;font-weight:700}
+  button.toggled{background:#6b9e6f;color:#fff}
+  .stat{margin:8px 0}
+  .meter{height:12px;background:#071018;border-radius:6px;overflow:hidden}
+  .meter > i{display:block;height:100%;background:linear-gradient(90deg,#68f,#39f);width:100%}
+  .log{height:140px;overflow:auto;background:#050914;border-radius:6px;padding:8px;border:1px solid rgba(255,255,255,0.03);font-size:13px}
+  footer{color:#88a;opacity:0.8;margin-top:8px}
+  .titleRow{display:flex;justify-content:space-between;align-items:center}
+</style>
 </head>
 <body>
   <div class="wrap">
-    <div class="game">
-      <h1>MeowSim — Мяусим (браузер)</h1>
-      <canvas id="gameCanvas" width="680" height="440"></canvas>
-      <div style="display:flex;gap:8px;margin-top:10px;">
-        <button id="feedBtn">Покормить (5 🪙)</button>
-        <button id="playBtn">Поиграть</button>
-        <button id="sleepBtn">Уложить спать</button>
-        <button id="shopBtn" class="secondary">Открыть магазин</button>
-        <button id="saveBtn" class="secondary">Сохранить</button>
-        <button id="loadBtn" class="secondary">Загрузить</button>
+    <div class="left">
+      <div class="titleRow"><h1>NightShift — Ночная смена</h1><div id="clockDisplay">20:00</div></div>
+      <canvas id="mainCanvas" width="720" height="420"></canvas>
+      <div class="controls">
+        <button id="camBtn">Камеры</button>
+        <button id="leftDoor">Дверь слева</button>
+        <button id="rightDoor">Дверь справа</button>
+        <button id="leftLight">Свет слева</button>
+        <button id="rightLight">Свет справа</button>
+        <button id="muteBtn">Звук</button>
       </div>
-      <div style="margin-top:10px;display:flex;gap:8px;align-items:flex-start">
-        <div style="flex:1">
-          <div class="messages" id="messages"></div>
-          <footer>Клик по коту — погладить. Игрушки используются кнопкой "Поиграть".</footer>
-        </div>
-        <div style="width:220px">
-          <div style="font-size:13px;color:#444">Инвентарь</div>
-          <div class="inventory" id="inventory"></div>
-        </div>
-      </div>
+      <div style="margin-top:8px;color:#aebfd0;font-size:13px">Цель: продержать ночь с 00:00 до 06:00. Следи за камерами, сохраняй энергию — закрывать двери и свет тратит энергию.</div>
     </div>
 
-    <div class="sidebar">
-      <div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong id="catName">Мурзик</strong>
-          <span id="coins">🪙 20</span>
-        </div>
-        <div style="margin-top:8px;font-size:13px;color:#555">Статы кота</div>
+    <div class="right">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><strong>Энергия</strong></div><div id="energyVal">100%</div></div>
+      <div class="meter" style="margin-top:6px"><i id="energyBar" style="width:100%"></i></div>
+
+      <div class="stat"><strong>Камера</strong><div id="camName">Камера 1</div></div>
+      <div class="stat"><strong>Аниматроники</strong><div id="aiList">Близко: —</div></div>
+
+      <div style="margin-top:8px"><strong>События</strong>
+        <div class="log" id="log"></div>
       </div>
 
-      <div class="stats">
-        <div class="bar">Голод <div class="meter" id="hungerMeter"><i></i></div></div>
-        <div class="bar">Настроение <div class="meter" id="happyMeter"><i></i></div></div>
-        <div class="bar">Энергия <div class="meter" id="energyMeter"><i></i></div></div>
-      </div>
-
-      <div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><strong>Магазин</strong><small style="color:#777"> (нажми)</small></div>
-        <div style="margin-top:6px;color:#666;font-size:13px">Мячик — 10 🪙, Перо — 20 🪙, Лазер — 50 🪙</div>
-      </div>
-
-      <div style="margin-top:auto">
-        <small style="color:#666">Сохранение: localStorage (в этом браузере).</small>
-      </div>
+      <div style="margin-top:10px;display:flex;gap:8px"><button id="startBtn">Начать смену</button><button id="restartBtn">Рестарт</button></div>
+      <footer>Игра — демо. Можно расширить: дополнительные камеры, ночи, сложность, звуки и спрайты.</footer>
     </div>
   </div>
 
-  <!-- Shop modal (simple) -->
-  <div id="shopModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);align-items:center;justify-content:center">
-    <div style="background:var(--panel);padding:14px;border-radius:10px;min-width:320px;max-width:90%">
-      <h3 style="margin-top:0">Магазин игрушек</h3>
-      <div class="shop-list">
-        <div class="shop-item"><div>1) Мячик</div><div>10 🪙 <button data-buy="ball">Купить</button></div></div>
-        <div class="shop-item"><div>2) Перо</div><div>20 🪙 <button data-buy="feather">Купить</button></div></div>
-        <div class="shop-item"><div>3) Лазер</div><div>50 🪙 <button data-buy="laser">Купить</button></div></div>
-      </div>
-      <div style="text-align:right;margin-top:10px"><button id="closeShop" class="secondary">Закрыть</button></div>
-    </div>
-  </div>
+<script>
+// NightShift — simplified FNAF-like browser demo
+(() => {
+  const canvas = document.getElementById('mainCanvas');
+  const ctx = canvas.getContext('2d');
+  const energyBar = document.getElementById('energyBar');
+  const energyVal = document.getElementById('energyVal');
+  const logEl = document.getElementById('log');
+  const camNameEl = document.getElementById('camName');
+  const aiListEl = document.getElementById('aiList');
+  const clockDisplay = document.getElementById('clockDisplay');
 
-  <script>
-    // Simple MeowSim browser version (single-file)
-    (function(){
-      const canvas = document.getElementById('gameCanvas');
-      const ctx = canvas.getContext('2d');
-      let W = canvas.width, H = canvas.height;
+  // buttons
+  const camBtn = document.getElementById('camBtn');
+  const leftDoorBtn = document.getElementById('leftDoor');
+  const rightDoorBtn = document.getElementById('rightDoor');
+  const leftLightBtn = document.getElementById('leftLight');
+  const rightLightBtn = document.getElementById('rightLight');
+  const startBtn = document.getElementById('startBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const muteBtn = document.getElementById('muteBtn');
 
-      // Game state
-      const state = {
-        name: 'Мурзик',
-        hunger: 70, // 0..100 (100 = full)
-        happiness: 80,
-        energy: 80,
-        coins: 20,
-        toys: [] // {id:'ball',name,playValue}
-      };
+  // game state
+  let running = false;
+  let showCams = false;
+  let currentCam = 0;
+  let energy = 100;
+  let timeMinutes = 20*60; // start 20:00 (use minutes as seconds here for demo speed)
+  let targetEnd = 6*60; // 6:00
+  let tickInterval = null;
+  let ai = [];
+  let audioOn = true;
 
-      // Toys data
-      const shop = {
-        ball: {id:'ball', name:'Мячик', price:10, playValue:18},
-        feather: {id:'feather', name:'Пёрышко', price:20, playValue:30},
-        laser: {id:'laser', name:'Лазер', price:50, playValue:60}
-      };
+  function log(msg){ const t = new Date().toLocaleTimeString(); logEl.innerHTML = '['+t+'] '+msg + '<br>' + logEl.innerHTML; }
 
-      // UI elements
-      const feedBtn = document.getElementById('feedBtn');
-      const playBtn = document.getElementById('playBtn');
-      const sleepBtn = document.getElementById('sleepBtn');
-      const shopBtn = document.getElementById('shopBtn');
-      const saveBtn = document.getElementById('saveBtn');
-      const loadBtn = document.getElementById('loadBtn');
-      const messages = document.getElementById('messages');
-      const inventory = document.getElementById('inventory');
-      const coinsEl = document.getElementById('coins');
-      const shopModal = document.getElementById('shopModal');
+  // simple animatronics with positions across map nodes
+  const mapNodes = ['Stage','Hall','Dining','Kitchen','LeftDoor','RightDoor','Office'];
+  function createAI(name, start, speed, aggressiveness){
+    return {name, pos:start, speed, aggression:aggressiveness, lastMove:0, active:true}
+  }
 
-      function addMessage(t){
-        const el = document.createElement('div'); el.textContent = t; messages.prepend(el);
-        while(messages.children.length>6) messages.removeChild(messages.lastChild);
+  function resetGame(){
+    running=false; showCams=false; currentCam=0; energy=100; timeMinutes = 20*60; ai = [];
+    ai.push(createAI('Марио', 0, 6, 0.15));
+    ai.push(createAI('Бот', 0, 5, 0.12));
+    updateUI(); drawOffice(); log('Игра готова. Нажми "Начать смену".');
+    if(tickInterval) clearInterval(tickInterval);
+  }
+
+  function startGame(){ if(running) return; running=true; log('Смена началась. Удачи.'); tickInterval = setInterval(tick, 1000); }
+  function endGame(win, reason){ running=false; clearInterval(tickInterval); tickInterval=null; if(win) { log('Вы продержались до 06:00 — Победа!'); showWin(); } else { log('Джампскэр! ' + reason); showJumpscare(reason); } }
+
+  function tick(){
+    // advance in-game clock faster (demo): every real second -> 1 in-game minute
+    timeMinutes += 1; // 1-minute steps
+    const hours = Math.floor((timeMinutes/60))%24;
+    const mins = Math.floor(timeMinutes%60);
+    clockDisplay.textContent = String(hours).padStart(2,'0')+':' + String(mins).padStart(2,'0');
+
+    // energy drain by systems
+    let drain = 0.2; // baseline
+    if(leftDoorBtn.classList.contains('toggled')) drain += 0.8;
+    if(rightDoorBtn.classList.contains('toggled')) drain += 0.8;
+    if(leftLightBtn.classList.contains('toggled')) drain += 0.3;
+    if(rightLightBtn.classList.contains('toggled')) drain += 0.3;
+    if(showCams) drain += 0.25;
+    energy = Math.max(0, energy - drain);
+    energyBar.style.width = energy + '%'; energyVal.textContent = Math.round(energy) + '%';
+
+    if(energy <= 0){ endGame(false, 'Отсутствие энергии — системы не работают.'); return; }
+
+    // move animatronics occasionally based on speed and aggression
+    ai.forEach(a=>{
+      if(!a.active) return;
+      a.lastMove++;
+      const moveThreshold = Math.max(2, Math.floor(a.speed / (1 + a.aggression* (1 - energy/100))));
+      if(a.lastMove >= moveThreshold){
+        a.lastMove = 0;
+        if(Math.random() < a.aggression + (1 - energy/200)){
+          // move forward towards office
+          if(a.pos < mapNodes.length-1) a.pos++;
+          log(a.name + ' передвинулся в ' + mapNodes[a.pos]);
+        } else {
+          // small chance to move back
+          if(a.pos > 0 && Math.random()<0.1) { a.pos--; log(a.name + ' ушёл назад в ' + mapNodes[a.pos]); }
+        }
       }
+    });
 
-      function updateSidebar(){
-        document.getElementById('catName').textContent = state.name;
-        coinsEl.textContent = '🪙 ' + state.coins;
-        setMeter('hungerMeter', state.hunger);
-        setMeter('happyMeter', state.happiness);
-        setMeter('energyMeter', state.energy);
-        renderInventory();
+    // check if someone reached office
+    const atOffice = ai.filter(a=> a.pos >= mapNodes.length-1 && a.active);
+    if(atOffice.length>0){
+      // if corresponding door closed or light on, they may be held back
+      const leftHere = ai.filter(a=> mapNodes[a.pos] === 'LeftDoor');
+      const rightHere = ai.filter(a=> mapNodes[a.pos] === 'RightDoor');
+      const officeHere = atOffice;
+      // if any reach office, check doors
+      const officeInvaded = ai.some(a => a.pos === mapNodes.length-1);
+      if(officeInvaded){
+        // if either door closed? in this simplified demo, doors block LeftDoor/RightDoor nodes
+        const leftClosed = leftDoorBtn.classList.contains('toggled');
+        const rightClosed = rightDoorBtn.classList.contains('toggled');
+        // if animatronic attempted to pass through a door node when closed, he stays
+        // but if already at office node we check immediate game over
+        // check probability to jumpscare based on closeness + low energy
+        let danger = 0.7; // default
+        if(energy > 30) danger -= 0.25;
+        if(leftClosed || rightClosed) danger -= 0.3;
+        if(Math.random() < danger){ endGame(false, 'Кто-то добрался до офиса.'); return; }
       }
-      function setMeter(id, val){ const el = document.getElementById(id); el.children[0].style.width = Math.max(0,Math.min(100,val)) + '%'; }
+    }
 
-      function renderInventory(){ inventory.innerHTML='';
-        if(state.toys.length===0){ inventory.innerHTML = '<div style="color:#777">Пусто</div>'; return; }
-        state.toys.forEach((t,i)=>{
-          const d = document.createElement('div'); d.className='toy'; d.textContent = t.name; inventory.appendChild(d);
-        });
-      }
+    // win condition (we're counting until 6:00)
+    if(hours >= 6){ endGame(true); return; }
 
-      // Buttons
-      feedBtn.addEventListener('click', ()=>{
-        if(state.coins >=5){ state.coins -=5; state.hunger = Math.min(100, state.hunger + 30); state.happiness = Math.min(100, state.happiness + 5); addMessage('Ты покормил '+state.name+' (+30 голода)'); }
-        else addMessage('Недостаточно монет чтобы покормить.');
-        updateSidebar();
-      });
+    updateUI();
+    drawOffice();
+  }
 
-      playBtn.addEventListener('click', ()=>{
-        if(state.energy < 15){ addMessage(state.name+' слишком устал играть.'); return; }
-        if(state.toys.length === 0){ addMessage('У тебя нет игрушек — купи в магазине.'); return; }
-        // choose random toy
-        const t = state.toys[Math.floor(Math.random()*state.toys.length)];
-        state.happiness = Math.min(100, state.happiness + t.playValue);
-        state.energy = Math.max(0, state.energy - 10);
-        state.hunger = Math.max(0, state.hunger - Math.floor(t.playValue/5));
-        addMessage('Вы поиграли с '+state.name+' и игрушкой «'+t.name+'» (+'+t.playValue+' наст.).');
-        updateSidebar();
-      });
+  function updateUI(){ camNameEl.textContent = 'Камера '+(currentCam+1); aiListEl.textContent = ai.map(a => a.name+': '+mapNodes[a.pos]).join('; '); }
 
-      sleepBtn.addEventListener('click', ()=>{
-        state.energy = Math.min(100, state.energy + 40);
-        state.hunger = Math.max(0, state.hunger - 15);
-        addMessage(state.name + ' поспал и восстановил энергию.'); updateSidebar();
-      });
+  // UI toggles
+  camBtn.addEventListener('click', ()=>{ showCams = !showCams; camBtn.classList.toggle('toggled', showCams); drawOffice(); });
+  leftDoorBtn.addEventListener('click', ()=>{ leftDoorBtn.classList.toggle('toggled'); });
+  rightDoorBtn.addEventListener('click', ()=>{ rightDoorBtn.classList.toggle('toggled'); });
+  leftLightBtn.addEventListener('click', ()=>{ leftLightBtn.classList.toggle('toggled'); });
+  rightLightBtn.addEventListener('click', ()=>{ rightLightBtn.classList.toggle('toggled'); });
+  muteBtn.addEventListener('click', ()=>{ audioOn = !audioOn; muteBtn.classList.toggle('toggled', !audioOn); muteBtn.textContent = audioOn? 'Звук' : 'Без звука'; });
 
-      shopBtn.addEventListener('click', ()=>{ shopModal.style.display='flex'; });
-      document.getElementById('closeShop').addEventListener('click', ()=>{ shopModal.style.display='none'; });
+  startBtn.addEventListener('click', startGame);
+  restartBtn.addEventListener('click', ()=>{ resetGame(); });
 
-      // shop buy buttons
-      Array.from(document.querySelectorAll('[data-buy]')).forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-          const id = btn.getAttribute('data-buy'); const item = shop[id];
-          if(state.coins >= item.price){ state.coins -= item.price; state.toys.push(Object.assign({},item)); addMessage('Куплено: '+item.name); updateSidebar(); }
-          else addMessage('Недостаточно монет на '+item.name);
-        });
-      });
+  // drawing: either office view or camera grid
+  function drawOffice(){ ctx.clearRect(0,0,canvas.width,canvas.height);
+    // background office
+    ctx.fillStyle='#0b0f14'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#1a1f25'; ctx.fillRect(40,40,440,340);
+    ctx.fillStyle='#2a3036'; ctx.fillRect(520,40,160,340);
+    // desk
+    ctx.fillStyle='#3b2f26'; ctx.fillRect(80,250,120,100);
+    // doors indicators
+    ctx.fillStyle = leftDoorBtn.classList.contains('toggled') ? '#ff4d4d' : '#2b2f34'; ctx.fillRect(30,160,10,60);
+    ctx.fillStyle = rightDoorBtn.classList.contains('toggled') ? '#ff4d4d' : '#2b2f34'; ctx.fillRect(690-10,160,10,60);
 
-      saveBtn.addEventListener('click', ()=>{ localStorage.setItem('meowsim_save', JSON.stringify(state)); addMessage('Игра сохранена в localStorage.'); });
-      loadBtn.addEventListener('click', ()=>{ const s = localStorage.getItem('meowsim_save'); if(!s){ addMessage('Сохранений не найдено.'); return;} const loaded = JSON.parse(s); Object.assign(state, loaded); addMessage('Игра загружена.'); updateSidebar(); });
+    // lights
+    if(leftLightBtn.classList.contains('toggled')){ ctx.fillStyle='rgba(255,255,200,0.08)'; ctx.fillRect(0,0,200,420); }
+    if(rightLightBtn.classList.contains('toggled')){ ctx.fillStyle='rgba(255,255,200,0.06)'; ctx.fillRect(520,0,200,420); }
 
-      // canvas drawing & interaction
-      let messagesQueue = [];
-      function draw(){
-        ctx.clearRect(0,0,W,H);
-        // floor
-        ctx.fillStyle = '#eef2f6'; ctx.fillRect(0,320,W,H-320);
+    // draw simple animatronics on map if camera mode
+    const nodeX = [100,200,300,380,480,560,640];
+    const nodeY = [120,120,120,120,200,200,120];
+    ctx.fillStyle='#223'; ctx.font='12px sans-serif';
+    for(let i=0;i<mapNodes.length;i++){ ctx.fillStyle='#162022'; ctx.fillRect(nodeX[i]-28,nodeY[i]-28,56,56); ctx.fillStyle='#88b'; ctx.fillText(mapNodes[i], nodeX[i]-22, nodeY[i]+40); }
 
-        // cat body
-        const cx=220, cy=180, r=110;
-        ctx.fillStyle='#caaea3'; ctx.beginPath(); ctx.ellipse(cx,cy, r, r, 0,0,Math.PI*2); ctx.fill();
-        // face
-        ctx.fillStyle='#e3d2c8'; ctx.beginPath(); ctx.ellipse(cx,cy-20,60,60,0,0,Math.PI*2); ctx.fill();
-        // eyes
-        ctx.fillStyle='#fff'; ctx.fillRect(cx-30, cy-40, 28, 18); ctx.fillRect(cx+2, cy-40,28,18);
-        ctx.fillStyle='#000'; ctx.fillRect(cx-22, cy-36,8,8); ctx.fillRect(cx+10, cy-36,8,8);
-        // nose
-        ctx.fillStyle='#b46b79'; ctx.beginPath(); ctx.moveTo(cx,cy-18); ctx.lineTo(cx-6, cy-6); ctx.lineTo(cx+6, cy-6); ctx.fill();
-        // mouth
-        ctx.strokeStyle='#6b4b4b'; ctx.beginPath(); ctx.arc(cx-8, cy+2, 8, Math.PI*0.15, Math.PI*0.95); ctx.stroke(); ctx.beginPath(); ctx.arc(cx+8, cy+2, 8, Math.PI*0.05, Math.PI*0.85); ctx.stroke();
-        // ears
-        ctx.fillStyle='#caaea3'; ctx.beginPath(); ctx.moveTo(cx-60, cy-60); ctx.lineTo(cx-40, cy-110); ctx.lineTo(cx-20, cy-60); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(cx+60, cy-60); ctx.lineTo(cx+40, cy-110); ctx.lineTo(cx+20, cy-60); ctx.fill();
+    // draw ai as circles
+    ai.forEach((a,idx)=>{
+      const x = nodeX[a.pos]; const y = nodeY[a.pos];
+      ctx.beginPath(); ctx.fillStyle = idx===0? '#b86' : '#6ab'; ctx.arc(x,y,16,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#111'; ctx.fillText(a.name, x-18, y+32);
+    });
 
-        // toys in inventory on right of canvas
-        ctx.fillStyle='#fff'; ctx.fillRect(380, 40, 280, 240); ctx.strokeStyle='#ddd'; ctx.strokeRect(380,40,280,240);
-        ctx.fillStyle='#000'; ctx.fillText('Инвентарь (для показа)', 390, 56);
-        state.toys.forEach((t,i)=>{
-          const ix = 420 + (i%2)*120; const iy = 120 + Math.floor(i/2)*70;
-          ctx.fillStyle = '#d8e6ff'; ctx.beginPath(); ctx.ellipse(ix+24, iy+24, 24, 24, 0,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#b9c7e8'; ctx.stroke(); ctx.fillStyle='#000'; ctx.fillText(t.name, ix+56, iy+28);
-        });
+    // if camera view active, show a grid overlay
+    if(showCams){ ctx.strokeStyle='rgba(200,220,255,0.06)'; ctx.lineWidth=2; ctx.strokeRect(48,48,420,320); ctx.fillStyle='rgba(255,255,255,0.02)'; ctx.fillRect(48,48,420,320); ctx.fillStyle='#cde'; ctx.font='14px sans-serif'; ctx.fillText('Камеры — обзор коридоров', 60,70); }
 
-        // events area (messages)
-        ctx.fillStyle='#000'; ctx.fillText('События:', 20, 420);
-        ctx.font='13px sans-serif'; let my = 436; for(let i=0;i<Math.min(6,messages.children.length);i++){ const t = messages.children[i].textContent; ctx.fillText(t,20,my); my+=16; }
+    // draw office camera window on the right
+    ctx.fillStyle='#051018'; ctx.fillRect(528,56,144,96); ctx.fillStyle='#9bd'; ctx.fillText('Монитор', 540,72);
+  }
 
-        // small stat bars
-        drawBar(20,20,'Голод', state.hunger); drawBar(20,50,'Настроение', state.happiness); drawBar(20,80,'Энергия', state.energy);
-      }
-      function drawBar(x,y,label,val){ ctx.font='12px sans-serif'; ctx.fillStyle='#000'; ctx.fillText(label+': '+val+'/100', x, y+10); ctx.fillStyle='#ddd'; ctx.fillRect(x+100,y,160,12); ctx.fillStyle='#6b9e6f'; ctx.fillRect(x+100,y,1.6*val,12); ctx.strokeStyle='#000'; ctx.strokeRect(x+100,y,160,12); }
+  // simple jumpscare overlay
+  function showJumpscare(reason){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.font='42px sans-serif'; ctx.fillText('!!! ДЖАМПСКЭЙР !!!', 80,200); ctx.font='18px sans-serif'; ctx.fillText(reason, 80,240); }
+  function showWin(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#071'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#eaf'; ctx.font='28px sans-serif'; ctx.fillText('Ты продержался! Победа!', 80,200); }
 
-      // click to pet
-      canvas.addEventListener('click', (ev)=>{
-        const rect = canvas.getBoundingClientRect(); const x = (ev.clientX - rect.left)*(canvas.width/rect.width); const y = (ev.clientY - rect.top)*(canvas.height/rect.height);
-        const cx=220, cy=180, r=110; if((x-cx)*(x-cx)+(y-cy)*(y-cy) <= r*r){ state.happiness = Math.min(100, state.happiness+5); addMessage('Ты погладил '+state.name+' (+5 настроения)'); updateSidebar(); }
-      });
-
-      // ticks
-      setInterval(()=>{
-        state.hunger = Math.max(0, state.hunger - 1);
-        state.energy = Math.max(0, state.energy - 1);
-        if(state.hunger < 20) state.happiness = Math.max(0, state.happiness - 2);
-        if(state.energy < 15) state.happiness = Math.max(0, state.happiness - 1);
-        if(state.happiness > 80 && Math.random()<0.02) { state.coins += 1; addMessage('Ты нашёл 1 монетку!'); }
-        updateSidebar(); draw();
-      }, 1000);
-
-      // initial
-      addMessage('Добро пожаловать в MeowSim! Кликни по коту чтобы погладить.'); updateSidebar(); draw();
-
-      // responsive canvas
-      function resize(){ const rect = canvas.getBoundingClientRect(); W = canvas.width = 680; H = canvas.height = 440; draw(); }
-      window.addEventListener('resize', resize);
-
-      // load earlier save if present
-      const s = localStorage.getItem('meowsim_save'); if(s){ try{ const loaded = JSON.parse(s); Object.assign(state, loaded); addMessage('Загружено автоматическое сохранение.'); updateSidebar(); }catch(e){} }
-
-    })();
-  </script>
+  // init
+  resetGame();
+})();
+</script>
 </body>
 </html>
