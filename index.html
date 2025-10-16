@@ -3,69 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рандомные мемы</title>
+    <title>Paralichevsky</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0a0a0a 100%);
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            /* Флаг России как фон с тремя полосами */
-            background: linear-gradient(to bottom, 
-                        white 0%, white 33.33%, 
-                        #0039A6 33.33%, #0039A6 66.66%, 
-                        #D52B1E 66.66%, #D52B1E 100%);
-            color: #000;
+            overflow: hidden;
+            position: relative;
         }
+        
+        /* Анимированный фон */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                linear-gradient(90deg, transparent 0%, rgba(255, 0, 255, 0.1) 50%, transparent 100%),
+                linear-gradient(0deg, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%);
+            animation: bgMove 20s linear infinite;
+        }
+        
+        @keyframes bgMove {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        /* Сетка в стиле ретро */
+        .grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            transform-origin: center bottom;
+            animation: gridMove 3s linear infinite;
+        }
+        
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 50px; }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 450px;
+            width: 90%;
+            padding: 40px;
+            background: rgba(10, 10, 30, 0.8);
+            border: 2px solid #ff00ff;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.5),
+                0 0 60px rgba(0, 255, 255, 0.3),
+                inset 0 0 30px rgba(255, 0, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: cardFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .profile {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            padding: 4px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.6),
+                0 0 50px rgba(0, 255, 255, 0.4);
+            animation: avatarGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes avatarGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 30px rgba(255, 0, 255, 0.6),
+                    0 0 50px rgba(0, 255, 255, 0.4);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 40px rgba(255, 0, 255, 0.8),
+                    0 0 70px rgba(0, 255, 255, 0.6);
+            }
+        }
+        
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a0033, #0a0a0a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         h1 {
-            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: titleGlow 2s ease-in-out infinite;
         }
-        img {
-            max-width: 80%;
-            max-height: 70vh;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+        
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.8)); }
+            50% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8)); }
         }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            background-color: #ff5722;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
+        
+        .subtitle {
+            color: #00ffff;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
         }
-        button:hover {
-            background-color: #e64a19;
+        
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid #ff00ff;
+            border-radius: 12px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .link-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .link-btn:hover::before {
+            left: 100%;
+        }
+        
+        .link-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.6),
+                0 0 50px rgba(0, 255, 255, 0.4),
+                inset 0 0 20px rgba(255, 0, 255, 0.2);
+            border-color: #00ffff;
+        }
+        
+        .link-btn.twitch {
+            border-color: #9146ff;
+        }
+        
+        .link-btn.twitch:hover {
+            box-shadow: 0 0 30px rgba(145, 70, 255, 0.6);
+        }
+        
+        .link-btn.tiktok {
+            border-color: #ff0050;
+        }
+        
+        .link-btn.tiktok:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 80, 0.6);
+        }
+        
+        .link-btn.steam {
+            border-color: #00adee;
+        }
+        
+        .link-btn.steam:hover {
+            box-shadow: 0 0 30px rgba(0, 173, 238, 0.6);
+        }
+        
+        .link-btn.discord {
+            border-color: #5865f2;
+        }
+        
+        .link-btn.discord:hover {
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+        }
+        
+        .icon {
+            font-size: 24px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .link-btn {
+                padding: 15px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Рандомные мемы</h1>
-    <img id="meme" src="" alt="Мем">
-    <button onclick="showRandomMeme()">Случайный мем</button>
-
-    <script>
-        const memes = [
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7DvXAKS1of5F5TH7FzqjUdk4OGyMKOBMGVQ&s",
-            "https://www.meme-arsenal.com/memes/0027102432ee0597ff7a360e22b5442a.jpg",
-            "https://cs14.pikabu.ru/post_img/2023/09/11/3/1694400215144276680.jpg",
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSki2ST_H17xakL7TbbKrXg6U-8NAcGkW5xVQ&s",
-            "https://i.pinimg.com/474x/35/4b/52/354b521efeb6b42aa0aaf5381664e943.jpg"
-        ];
-
-        function showRandomMeme() {
-            const randomIndex = Math.floor(Math.random() * memes.length);
-            document.getElementById('meme').src = memes[randomIndex];
-        }
-
-        // Показываем первый мем при загрузке
-        showRandomMeme();
-    </script>
+    <div class="grid"></div>
+    
+    <div class="container">
+        <div class="profile">
+            <div class="avatar">
+                <div class="avatar-inner">
+                    <img src="https://raw.githubusercontent.com/PARALICHEVSKY/infantiles-site/refs/heads/main/photo_2025-04-29_01-20-56.jpg" alt="Avatar">
+                </div>
+            </div>
+            <h1>Paralichevsky</h1>
+        </div>
+        
+        <div class="links">
+            <a href="https://www.twitch.tv/paralichevsky" class="link-btn twitch" target="_blank">
+                <span class="icon">📺</span>
+                <span>Twitch</span>
+            </a>
+            
+            <a href="https://www.tiktok.com/@paralichevsky" class="link-btn tiktok" target="_blank">
+                <span class="icon">🎵</span>
+                <span>TikTok</span>
+            </a>
+            
+            <a href="https://steamcommunity.com/id/paralichevsky/" class="link-btn steam" target="_blank">
+                <span class="icon">🎮</span>
+                <span>Steam</span>
+            </a>
+            
+            <a href="https://discord.gg/Wrxa7SZZ94" class="link-btn discord" target="_blank">
+                <span class="icon">💬</span>
+                <span>Discord</span>
+            </a>
+        </div>
+    </div>
 </body>
 </html>
