@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paralichevsky</title>
+    <title>⚠️ PARALICHEVSKY ⚠️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Creepster&display=swap');
         
         * {
             margin: 0;
@@ -14,50 +14,50 @@
         }
         
         body {
-            font-family: 'Orbitron', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #0a0a0a 100%);
+            font-family: 'Comic Neue', cursive;
+            background: #000;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             position: relative;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><text y="15" font-size="15">💀</text></svg>'), auto;
         }
         
-        /* Анимированный фон */
+        /* ТРЕШОВЫЙ ФОНОВЫЙ ХАОС */
+        @keyframes psycho {
+            0% { background-position: 0% 0%; filter: hue-rotate(0deg); }
+            25% { background-position: 100% 100%; filter: hue-rotate(90deg); }
+            50% { background-position: 0% 100%; filter: hue-rotate(180deg); }
+            75% { background-position: 100% 0%; filter: hue-rotate(270deg); }
+            100% { background-position: 0% 0%; filter: hue-rotate(360deg); }
+        }
+        
         body::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
-            background: 
-                linear-gradient(90deg, transparent 0%, rgba(255, 0, 255, 0.1) 50%, transparent 100%),
-                linear-gradient(0deg, transparent 0%, rgba(0, 255, 255, 0.1) 50%, transparent 100%);
-            animation: bgMove 20s linear infinite;
-        }
-        
-        @keyframes bgMove {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        /* Сетка в стиле ретро */
-        .grid {
-            position: absolute;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: perspective(500px) rotateX(60deg);
-            transform-origin: center bottom;
-            animation: gridMove 3s linear infinite;
+            background: 
+                repeating-linear-gradient(45deg, #ff0000 0px, #00ff00 10px, #0000ff 20px, #ffff00 30px),
+                repeating-linear-gradient(-45deg, #ff00ff 0px, #00ffff 15px, #ff0000 30px);
+            opacity: 0.3;
+            animation: psycho 3s linear infinite;
         }
         
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 50px; }
+        /* МИГАЮЩИЕ ЭМОДЗИ ВЕЗДЕ */
+        .emoji-chaos {
+            position: fixed;
+            font-size: 40px;
+            animation: emojiFloat 3s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes emojiFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
         }
         
         .container {
@@ -65,101 +65,148 @@
             z-index: 10;
             max-width: 450px;
             width: 90%;
-            padding: 40px;
-            background: rgba(10, 10, 30, 0.8);
-            border: 2px solid #ff00ff;
-            border-radius: 20px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 5px dashed #ff0000;
+            border-radius: 0;
             box-shadow: 
-                0 0 30px rgba(255, 0, 255, 0.5),
-                0 0 60px rgba(0, 255, 255, 0.3),
-                inset 0 0 30px rgba(255, 0, 255, 0.1);
-            backdrop-filter: blur(10px);
-            animation: cardFloat 3s ease-in-out infinite;
+                0 0 50px #ff0000,
+                0 0 100px #00ff00,
+                0 0 150px #0000ff,
+                inset 0 0 50px rgba(255, 0, 0, 0.3);
+            animation: containerShake 0.3s infinite, containerSpin 10s linear infinite;
+            transform-style: preserve-3d;
         }
         
-        @keyframes cardFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        @keyframes containerShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-3px, 3px) rotate(-1deg); }
+            75% { transform: translate(3px, -3px) rotate(1deg); }
+        }
+        
+        @keyframes containerSpin {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
         }
         
         .profile {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             margin: 0 auto 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff00ff, #00ffff);
-            padding: 4px;
+            border-radius: 0;
+            border: 5px solid #ff00ff;
+            padding: 5px;
             box-shadow: 
-                0 0 30px rgba(255, 0, 255, 0.6),
-                0 0 50px rgba(0, 255, 255, 0.4);
-            animation: avatarGlow 2s ease-in-out infinite;
+                0 0 30px #ff0000,
+                0 0 60px #00ff00,
+                0 0 90px #0000ff;
+            animation: avatarCrazy 0.5s infinite, avatarRotate 2s linear infinite;
+            position: relative;
         }
         
-        @keyframes avatarGlow {
+        @keyframes avatarCrazy {
             0%, 100% { 
-                box-shadow: 
-                    0 0 30px rgba(255, 0, 255, 0.6),
-                    0 0 50px rgba(0, 255, 255, 0.4);
+                transform: scale(1) rotate(0deg);
+                border-color: #ff00ff;
+            }
+            25% { 
+                transform: scale(1.1) rotate(5deg);
+                border-color: #00ff00;
             }
             50% { 
-                box-shadow: 
-                    0 0 40px rgba(255, 0, 255, 0.8),
-                    0 0 70px rgba(0, 255, 255, 0.6);
+                transform: scale(0.9) rotate(-5deg);
+                border-color: #ff0000;
             }
+            75% { 
+                transform: scale(1.05) rotate(3deg);
+                border-color: #00ffff;
+            }
+        }
+        
+        @keyframes avatarRotate {
+            0% { filter: hue-rotate(0deg) saturate(2); }
+            100% { filter: hue-rotate(360deg) saturate(2); }
         }
         
         .avatar-inner {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a0033, #0a0a0a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
+            position: relative;
         }
         
         .avatar-inner img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            animation: imgGlitch 0.3s infinite;
         }
         
+        @keyframes imgGlitch {
+            0%, 100% { transform: translate(0, 0); filter: contrast(1); }
+            33% { transform: translate(-2px, 2px); filter: contrast(1.5); }
+            66% { transform: translate(2px, -2px); filter: contrast(0.8); }
+        }
+        
+        /* ЕБАНУТЫЙ ЗАГОЛОВОК */
         h1 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 900;
-            background: linear-gradient(135deg, #ff00ff, #00ffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #ff0000;
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: titleGlow 2s ease-in-out infinite;
+            letter-spacing: 5px;
+            animation: titleMadness 0.2s infinite;
+            text-shadow: 
+                3px 3px 0 #00ff00,
+                -3px -3px 0 #0000ff,
+                0 0 20px #ff00ff,
+                0 0 40px #ffff00;
+            font-family: 'Creepster', cursive;
         }
         
-        @keyframes titleGlow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.8)); }
-            50% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8)); }
+        @keyframes titleMadness {
+            0%, 100% { 
+                transform: skew(0deg, 0deg);
+                color: #ff0000;
+            }
+            25% { 
+                transform: skew(2deg, -2deg);
+                color: #00ff00;
+            }
+            50% { 
+                transform: skew(-2deg, 2deg);
+                color: #0000ff;
+            }
+            75% { 
+                transform: skew(1deg, 1deg);
+                color: #ff00ff;
+            }
         }
         
-        .subtitle {
-            color: #00ffff;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.8;
+        .warning {
+            color: #ffff00;
+            font-size: 18px;
+            font-weight: 700;
+            animation: blink 0.5s infinite;
+            text-shadow: 0 0 10px #ff0000;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
         }
         
         .links {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 15px;
         }
         
         .link-btn {
@@ -167,100 +214,86 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
-            border: 2px solid #ff00ff;
-            border-radius: 12px;
-            color: #fff;
+            padding: 20px 24px;
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff00ff);
+            background-size: 400% 400%;
+            border: 3px solid #ffff00;
+            color: #000;
             text-decoration: none;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
+            letter-spacing: 3px;
+            transition: all 0.1s ease;
             position: relative;
             overflow: hidden;
+            animation: gradientShift 2s ease infinite, btnShake 0.5s infinite;
+            text-shadow: 1px 1px 0 #fff;
+            transform: skew(-5deg);
         }
         
-        .link-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
-        .link-btn:hover::before {
-            left: 100%;
+        @keyframes btnShake {
+            0%, 100% { transform: skew(-5deg) translate(0, 0); }
+            25% { transform: skew(-5deg) translate(-2px, 2px); }
+            75% { transform: skew(-5deg) translate(2px, -2px); }
         }
         
         .link-btn:hover {
-            transform: translateY(-3px);
+            transform: skew(-5deg) scale(1.1) rotate(2deg);
+            animation: btnCrazy 0.2s infinite, gradientShift 0.5s ease infinite;
             box-shadow: 
-                0 0 30px rgba(255, 0, 255, 0.6),
-                0 0 50px rgba(0, 255, 255, 0.4),
-                inset 0 0 20px rgba(255, 0, 255, 0.2);
-            border-color: #00ffff;
+                0 0 30px #ff0000,
+                0 0 60px #00ff00,
+                0 0 90px #0000ff;
         }
         
-        .link-btn.twitch {
-            border-color: #9146ff;
-        }
-        
-        .link-btn.twitch:hover {
-            box-shadow: 0 0 30px rgba(145, 70, 255, 0.6);
-        }
-        
-        .link-btn.tiktok {
-            border-color: #ff0050;
-        }
-        
-        .link-btn.tiktok:hover {
-            box-shadow: 0 0 30px rgba(255, 0, 80, 0.6);
-        }
-        
-        .link-btn.steam {
-            border-color: #00adee;
-        }
-        
-        .link-btn.steam:hover {
-            box-shadow: 0 0 30px rgba(0, 173, 238, 0.6);
-        }
-        
-        .link-btn.discord {
-            border-color: #5865f2;
-        }
-        
-        .link-btn.discord:hover {
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+        @keyframes btnCrazy {
+            0%, 100% { transform: skew(-5deg) scale(1.1) rotate(2deg); }
+            50% { transform: skew(5deg) scale(1.15) rotate(-2deg); }
         }
         
         .icon {
-            font-size: 24px;
+            font-size: 30px;
+            animation: iconSpin 1s linear infinite;
+        }
+        
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        /* СЛУЧАЙНЫЕ МИГАЮЩИЕ ТОЧКИ */
+        .glitch-dot {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: dotGlitch 0.1s infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes dotGlitch {
+            0%, 100% { opacity: 1; background: #ff0000; }
+            33% { opacity: 0; background: #00ff00; }
+            66% { opacity: 1; background: #0000ff; }
         }
         
         @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .link-btn {
-                padding: 15px 20px;
-                font-size: 14px;
-            }
+            h1 { font-size: 28px; }
+            .link-btn { font-size: 16px; padding: 15px 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="grid"></div>
-    
     <div class="container">
         <div class="profile">
             <div class="avatar">
@@ -268,30 +301,62 @@
                     <img src="https://raw.githubusercontent.com/PARALICHEVSKY/infantiles-site/refs/heads/main/photo_2025-04-29_01-20-56.jpg" alt="Avatar">
                 </div>
             </div>
-            <h1>Paralichevsky</h1>
+            <h1>⚠️ PARALICHEVSKY ⚠️</h1>
+            <div class="warning">🔥 ОПАСНАЯ ЗОНА 🔥</div>
         </div>
         
         <div class="links">
-            <a href="https://www.twitch.tv/paralichevsky" class="link-btn twitch" target="_blank">
+            <a href="https://www.twitch.tv/paralichevsky" class="link-btn" target="_blank">
                 <span class="icon">📺</span>
-                <span>Twitch</span>
+                <span>TWITCH</span>
             </a>
             
-            <a href="https://www.tiktok.com/@paralichevsky" class="link-btn tiktok" target="_blank">
+            <a href="https://www.tiktok.com/@paralichevsky" class="link-btn" target="_blank">
                 <span class="icon">🎵</span>
-                <span>TikTok</span>
+                <span>TIKTOK</span>
             </a>
             
-            <a href="https://steamcommunity.com/id/paralichevsky/" class="link-btn steam" target="_blank">
+            <a href="https://steamcommunity.com/id/paralichevsky/" class="link-btn" target="_blank">
                 <span class="icon">🎮</span>
-                <span>Steam</span>
+                <span>STEAM</span>
             </a>
             
-            <a href="https://discord.gg/Wrxa7SZZ94" class="link-btn discord" target="_blank">
+            <a href="https://discord.gg/Wrxa7SZZ94" class="link-btn" target="_blank">
                 <span class="icon">💬</span>
-                <span>Discord</span>
+                <span>DISCORD</span>
             </a>
         </div>
     </div>
+    
+    <script>
+        // Создаем хаос из эмодзи
+        const emojis = ['💀', '🔥', '⚡', '💥', '🤯', '😈', '👾', '🚨', '⚠️', '💣', '🎮', '🎪', '🌈', '✨', '💫'];
+        
+        function createEmoji() {
+            const emoji = document.createElement('div');
+            emoji.className = 'emoji-chaos';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = Math.random() * 100 + '%';
+            emoji.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(emoji);
+            
+            setTimeout(() => emoji.remove(), 4000);
+        }
+        
+        setInterval(createEmoji, 300);
+        
+        // Создаем глитч-точки
+        function createGlitchDot() {
+            const dot = document.createElement('div');
+            dot.className = 'glitch-dot';
+            dot.style.left = Math.random() * 100 + '%';
+            dot.style.top = Math.random() * 100 + '%';
+            document.body.appendChild(dot);
+            
+            setTimeout(() => dot.remove(), 1000);
+        }
+        
+        setInterval(createGlitchDot, 100);
+    </script>
 </body>
 </html>
